@@ -1,4 +1,4 @@
-package edu.mit.d54.plugins.frog;
+package edu.mit.d54.plugins.kx;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -21,9 +21,10 @@ import edu.mit.d54.DisplayPlugin;
 import edu.mit.d54.GBDisplay;
 
 /**
- * This is a plugin implementing the Frog game.  User input is received over the TCP socket on port 12345.
+ * This is a plugin implementing the Frog game. Written by KX, based on source code from MITris
+ *  User input is received over the TCP socket on port 12345.
  */
-public class frogPlugin extends DisplayPlugin {
+public class FrogPlugin extends DisplayPlugin {
 	
 	private enum State { IDLE, GAME, GAME_END_1, GAME_END_2, LEVEL_START, IDLE_ANIM };
 	
@@ -108,7 +109,7 @@ public class frogPlugin extends DisplayPlugin {
 
 	private int vert = 0;
 	
-	public frogPlugin(Display2D display, double framerate) throws IOException {
+	public FrogPlugin(Display2D display, double framerate) throws IOException {
 		super(display, framerate);
 		timestep=1/framerate;
 		width=display.getWidth();
@@ -1932,7 +1933,7 @@ private void showWin()
 		frame.pack();
 		frame.setVisible(true);
 		
-		frogPlugin plugin=new frogPlugin(display, 15);
+		FrogPlugin plugin=new FrogPlugin(display, 15);
 		plugin.start();
 	}
 }

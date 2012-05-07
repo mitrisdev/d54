@@ -1,4 +1,4 @@
-package edu.mit.d54.plugins.pong;
+package edu.mit.d54.plugins.kx;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -24,7 +24,7 @@ import edu.mit.d54.GBDisplay;
  * This is a plugin implementing a Pong game. Written by KX, based on source code from MITris
  *  User input is received over the TCP socket on port 12345.
  */
-public class pongPlugin extends DisplayPlugin {
+public class PongPlugin extends DisplayPlugin {
 	
 	private enum State { IDLE, GAME, GAME_END_1, GAME_END_2, PLAY_START, IDLE_ANIM };
 	
@@ -62,7 +62,7 @@ public class pongPlugin extends DisplayPlugin {
 
 	private int vert = 0;
 	
-	public pongPlugin(Display2D display, double framerate) throws IOException {
+	public PongPlugin(Display2D display, double framerate) throws IOException {
 		super(display, framerate);
 		timestep=1/framerate;
 		width=display.getWidth();
@@ -344,6 +344,10 @@ public class pongPlugin extends DisplayPlugin {
 			gameState=State.PLAY_START;
 			}
 		animTime=0;
+		if (ballPosX<0){ballPosX=0;}	// catch-alls for crash prevention
+		if (ballPosX>8){ballPosX=8;}
+		if (ballPosY<0){ballPosY=0;}
+		if (ballPosY>16){ballPosY=16;}
 		}
 
 	ballLastStep = animTime;
@@ -1069,7 +1073,7 @@ private void showWin()
 		frame.pack();
 		frame.setVisible(true);
 		
-		pongPlugin plugin=new pongPlugin(display, 15);
+		PongPlugin plugin=new PongPlugin(display, 15);
 		plugin.start();
 	}
 }
