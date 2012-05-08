@@ -32,6 +32,8 @@ public class PongPlugin extends DisplayPlugin {
 	private Socket sock;
 	private InputStream in;
 	
+	private final Display2D display;
+	
 	private final double timestep;
 	private final int width;
 	private final int height;
@@ -64,6 +66,7 @@ public class PongPlugin extends DisplayPlugin {
 	
 	public PongPlugin(Display2D display, double framerate) throws IOException {
 		super(display, framerate);
+		this.display=display;
 		timestep=1/framerate;
 		width=display.getWidth();
 		height=display.getHeight();
@@ -1059,21 +1062,5 @@ private void showWin()
 			sock=null;
 			in=null;
 		}
-	}
-
-
-	public static void main(String[] args) throws Exception
-	{
-		Display2D display=new GBDisplay();
-		
-		JFrame frame=new JFrame("Pong!");
-		DisplayPanel dPanel=new DisplayPanel(display);
-		frame.add(dPanel);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
-		frame.pack();
-		frame.setVisible(true);
-		
-		PongPlugin plugin=new PongPlugin(display, 15);
-		plugin.start();
 	}
 }

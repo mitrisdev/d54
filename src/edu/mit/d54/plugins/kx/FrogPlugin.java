@@ -35,6 +35,8 @@ public class FrogPlugin extends DisplayPlugin {
 	private final double timestep;
 	private final int width;
 	private final int height;
+	
+	private final Display2D display;
 
 	private State gameState;
 	private double gameDisplayTime;
@@ -111,6 +113,7 @@ public class FrogPlugin extends DisplayPlugin {
 	
 	public FrogPlugin(Display2D display, double framerate) throws IOException {
 		super(display, framerate);
+		this.display=display;
 		timestep=1/framerate;
 		width=display.getWidth();
 		height=display.getHeight();
@@ -1919,21 +1922,5 @@ private void showWin()
 			sock=null;
 			in=null;
 		}
-	}
-
-
-	public static void main(String[] args) throws Exception
-	{
-		Display2D display=new GBDisplay();
-		
-		JFrame frame=new JFrame("Frog!");
-		DisplayPanel dPanel=new DisplayPanel(display);
-		frame.add(dPanel);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
-		frame.pack();
-		frame.setVisible(true);
-		
-		FrogPlugin plugin=new FrogPlugin(display, 15);
-		plugin.start();
 	}
 }
