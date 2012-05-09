@@ -72,7 +72,8 @@ public class Display2D {
 	}
 	
 	/**
-	 * @deprecated Use the setRGB and getRGB methods in this object instead.
+	 * This method has been deprecated and will be removed in the future.  Please use the getPixel and setPixel methods instead.
+	 * @deprecated Use the setRGB and getRGB methods in this class instead.
 	 * @return The {@link BufferedImage} backing the frame being rendered.
 	 */
 	public BufferedImage getImage()

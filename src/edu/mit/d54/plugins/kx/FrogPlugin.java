@@ -1,24 +1,13 @@
 package edu.mit.d54.plugins.kx;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.Ellipse2D;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
-import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-
 import edu.mit.d54.Display2D;
-import edu.mit.d54.DisplayPanel;
 import edu.mit.d54.DisplayPlugin;
-import edu.mit.d54.GBDisplay;
 
 /**
  * This is a plugin implementing the Frog game. Written by KX, based on source code from MITris
@@ -129,7 +118,6 @@ public class FrogPlugin extends DisplayPlugin {
 	protected void loop() {
 		Display2D display=getDisplay();
 		byte userInput=getUserInput();
-		BufferedImage img=display.getImage();
 		
 		switch (gameState)
 		{
@@ -230,7 +218,7 @@ public class FrogPlugin extends DisplayPlugin {
 
 		for (int i = 0;i < vert; i++){			// death animation
 			for (int horiz = 0; horiz < 9; horiz++){
-				img.setRGB(horiz, i, ((255-(i*15)) << 16) + (0 << 8) + 0); // (red)
+				display.setPixelRGB(horiz, i, 255-(i*15), 0, 0); // (red)
 			}
 		}
 
@@ -256,7 +244,7 @@ public class FrogPlugin extends DisplayPlugin {
 
 			for (int i = 0;i < vert; i++){		// animated wipe away of "WIN" 
 				for (int horiz = 0; horiz < 9; horiz++){
-					img.setRGB(horiz, i, (0 << 16) + (0 << 8) + 0); // (BLACK)
+					display.setPixelRGB(horiz, i, 0, 0, 0); // (BLACK)
 				}
 			}
 
@@ -465,219 +453,217 @@ public class FrogPlugin extends DisplayPlugin {
 	
 	public void drawScreen() // draw the frog and all the cars in the right place and colour
 	{
-		BufferedImage img=display.getImage();
-
-		img.setRGB(frogPosX, frogPosY, (0 << 16) + (255 << 8) + 0); // frog 
+		display.setPixelRGB(frogPosX, frogPosY, 0, 255, 0); // frog 
 
 //////////////////  LANE 1  /////////////////////////
 	if (lane1Enabled == 1){
-		img.setRGB(lane1X, lane1Car1Y, (255 << 16) + (0 << 8) + 0); // car 1 (red)
+		display.setPixelRGB(lane1X, lane1Car1Y, (255 << 16) + (0 << 8) + 0); // car 1 (red)
 
 
-		img.setRGB(lane1X, lane1Car2Y, (255 << 16) + (125 << 8) + 125); // car 2
+		display.setPixelRGB(lane1X, lane1Car2Y, (255 << 16) + (125 << 8) + 125); // car 2
 
 		if (lane1Car2Y+1 < 17){ // if second part overflows draw at 0
-			img.setRGB(lane1X, lane1Car2Y+1, (255 << 16) + (125 << 8) + 125); // car 2 (pink)
+			display.setPixelRGB(lane1X, lane1Car2Y+1, (255 << 16) + (125 << 8) + 125); // car 2 (pink)
 		}
 		if (lane1Car2Y+1 == 17){ // if second part overflows draw at 0
-			img.setRGB(lane1X, 0, (255 << 16) + (125 << 8) + 125); // car 2 (pink)
+			display.setPixelRGB(lane1X, 0, (255 << 16) + (125 << 8) + 125); // car 2 (pink)
 		}
 
-		img.setRGB(lane1X, lane1Car3Y, (255 << 16) + (187 << 8) + 0); // car 3 (orange)
+		display.setPixelRGB(lane1X, lane1Car3Y, (255 << 16) + (187 << 8) + 0); // car 3 (orange)
 
 
-		img.setRGB(lane1X, lane1Car4Y, (0 << 16) + (0 << 8) + 255); // car 4 (blue)
+		display.setPixelRGB(lane1X, lane1Car4Y, (0 << 16) + (0 << 8) + 255); // car 4 (blue)
 
 		if (lane1Car4Y+1 < 17){ // if second part doesn't overflow draw
-			img.setRGB(lane1X, lane1Car4Y+1, (0 << 16) + (0 << 8) + 255); // car 4 (blue)
+			display.setPixelRGB(lane1X, lane1Car4Y+1, (0 << 16) + (0 << 8) + 255); // car 4 (blue)
 		}
 		if (lane1Car4Y+1 == 17){ // if second part overflows draw at 0
-			img.setRGB(lane1X, 0, (0 << 16) + (0 << 8) + 255); // car 4 (blue)
+			display.setPixelRGB(lane1X, 0, (0 << 16) + (0 << 8) + 255); // car 4 (blue)
 		}
 		if (lane1Car4Y+2 < 17){ // if third part doesn't overflow draw
-			img.setRGB(lane1X, lane1Car4Y+2, (0 << 16) + (0 << 8) + 255); // car 4 (blue)
+			display.setPixelRGB(lane1X, lane1Car4Y+2, (0 << 16) + (0 << 8) + 255); // car 4 (blue)
 		}
 		if (lane1Car4Y+2 == 17){ // if third part overflows 1 draw at 0
-			img.setRGB(lane1X, 0, (0 << 16) + (0 << 8) + 255); // car 4 (blue)
+			display.setPixelRGB(lane1X, 0, (0 << 16) + (0 << 8) + 255); // car 4 (blue)
 		}
 		if (lane1Car4Y+2 == 18){ // if third part overflows 2 draw at 1
-			img.setRGB(lane1X, 1, (0 << 16) + (0 << 8) + 255); // car 4 (blue)
+			display.setPixelRGB(lane1X, 1, (0 << 16) + (0 << 8) + 255); // car 4 (blue)
 		}
 	}
 //////////////////  LANE 2  /////////////////////////
 	if (lane2Enabled == 1){
-		img.setRGB(lane2X, lane2Car1Y, (255 << 16) + (255 << 8) + 0); // car 1 (yellow)
+		display.setPixelRGB(lane2X, lane2Car1Y, (255 << 16) + (255 << 8) + 0); // car 1 (yellow)
 
 
-		img.setRGB(lane2X, lane2Car2Y, (0 << 16) + (130 << 8) + 130); // car 2	dark green
+		display.setPixelRGB(lane2X, lane2Car2Y, (0 << 16) + (130 << 8) + 130); // car 2	dark green
 
 		if (lane2Car2Y-1 > -1){ // if second part doesn't overflow, draw 
-			img.setRGB(lane2X, lane2Car2Y-1, (0 << 16) + (130 << 8) + 130); // car 2 
+			display.setPixelRGB(lane2X, lane2Car2Y-1, (0 << 16) + (130 << 8) + 130); // car 2 
 		}
 		if (lane2Car2Y-1 == -1){ // if second part overflows draw at 16
-			img.setRGB(lane2X, 16, (0 << 16) + (130 << 8) + 130); // car 2 
+			display.setPixelRGB(lane2X, 16, (0 << 16) + (130 << 8) + 130); // car 2 
 		}
 
-		img.setRGB(lane2X, lane2Car3Y, (190 << 16) + (0 << 8) + 255); // car 3 (purple)
+		display.setPixelRGB(lane2X, lane2Car3Y, (190 << 16) + (0 << 8) + 255); // car 3 (purple)
 
 
-		img.setRGB(lane2X, lane2Car4Y, (255 << 16) + (0 << 8) + 0); // car 4 (RED)
+		display.setPixelRGB(lane2X, lane2Car4Y, (255 << 16) + (0 << 8) + 0); // car 4 (RED)
 
 		if (lane2Car4Y-1 > -1){ // if second part doesn't overflow draw
-			img.setRGB(lane2X, lane2Car4Y-1, (255 << 16) + (0 << 8) + 0); // car 4 
+			display.setPixelRGB(lane2X, lane2Car4Y-1, (255 << 16) + (0 << 8) + 0); // car 4 
 		}
 		if (lane2Car4Y-1 == -1){ // if second part overflows draw at 16
-			img.setRGB(lane2X, 16, (255 << 16) + (0 << 8) + 0); // car 4 
+			display.setPixelRGB(lane2X, 16, (255 << 16) + (0 << 8) + 0); // car 4 
 		}
 		if (lane2Car4Y-2 > -1){ // if third part doesn't overflow draw
-			img.setRGB(lane2X, lane2Car4Y-2, (255 << 16) + (0 << 8) + 0); // car 4 
+			display.setPixelRGB(lane2X, lane2Car4Y-2, (255 << 16) + (0 << 8) + 0); // car 4 
 		}
 		if (lane2Car4Y-2 == -1){ // if third part overflows 1 draw at 16
-			img.setRGB(lane2X, 16, (255 << 16) + (0 << 8) + 0); // car 4 
+			display.setPixelRGB(lane2X, 16, (255 << 16) + (0 << 8) + 0); // car 4 
 		}
 		if (lane2Car4Y-2 == -2){ // if third part overflows 2 draw at 15
-			img.setRGB(lane2X, 15, (255 << 16) + (0 << 8) + 0); // car 4 
+			display.setPixelRGB(lane2X, 15, (255 << 16) + (0 << 8) + 0); // car 4 
 		}
 	}
 
 //////////////////  LANE 3  /////////////////////////
 	if (lane3Enabled == 1){
-		img.setRGB(lane3X, lane3Car1Y, (150 << 16) + (100 << 8) + 0); // car 1 (brown)
+		display.setPixelRGB(lane3X, lane3Car1Y, (150 << 16) + (100 << 8) + 0); // car 1 (brown)
      
 
-		img.setRGB(lane3X, lane3Car2Y, (150 << 16) + (100 << 8) + 255); // car 2
+		display.setPixelRGB(lane3X, lane3Car2Y, (150 << 16) + (100 << 8) + 255); // car 2
 
 		if (lane3Car2Y+1 < 17){ // if second part overflows draw at 0
-			img.setRGB(lane3X, lane3Car2Y+1, (150 << 16) + (100 << 8) + 255); // car 2 (purple)
+			display.setPixelRGB(lane3X, lane3Car2Y+1, (150 << 16) + (100 << 8) + 255); // car 2 (purple)
 		}
 		if (lane3Car2Y+1 == 17){ // if second part overflows draw at 0
-			img.setRGB(lane3X, 0, (150 << 16) + (100 << 8) + 255); // car 2 (purple)
+			display.setPixelRGB(lane3X, 0, (150 << 16) + (100 << 8) + 255); // car 2 (purple)
 		}
 
-		img.setRGB(lane3X, lane3Car3Y, (150 << 16) + (255 << 8) + 255); // car 3 (light blue)
+		display.setPixelRGB(lane3X, lane3Car3Y, (150 << 16) + (255 << 8) + 255); // car 3 (light blue)
 
 
-		img.setRGB(lane3X, lane3Car4Y, (255 << 16) + (175 << 8) + 133); // car 4 (peach)
+		display.setPixelRGB(lane3X, lane3Car4Y, (255 << 16) + (175 << 8) + 133); // car 4 (peach)
 
 		if (lane3Car4Y+1 < 17){ // if second part doesn't overflow draw
-			img.setRGB(lane3X, lane3Car4Y+1, (255 << 16) + (175 << 8) + 133); // car 4 (blue)
+			display.setPixelRGB(lane3X, lane3Car4Y+1, (255 << 16) + (175 << 8) + 133); // car 4 (blue)
 		}
 		if (lane3Car4Y+1 == 17){ // if second part overflows draw at 0
-			img.setRGB(lane3X, 0, (255 << 16) + (175 << 8) + 133); // car 4 (blue)
+			display.setPixelRGB(lane3X, 0, (255 << 16) + (175 << 8) + 133); // car 4 (blue)
 		}
 		if (lane3Car4Y+2 < 17){ // if third part doesn't overflow draw
-			img.setRGB(lane3X, lane3Car4Y+2, (255 << 16) + (175 << 8) + 133); // car 4 (blue)
+			display.setPixelRGB(lane3X, lane3Car4Y+2, (255 << 16) + (175 << 8) + 133); // car 4 (blue)
 		}
 		if (lane3Car4Y+2 == 17){ // if third part overflows 1 draw at 0
-			img.setRGB(lane3X, 0, (255 << 16) + (175 << 8) + 133); // car 4 (blue)
+			display.setPixelRGB(lane3X, 0, (255 << 16) + (175 << 8) + 133); // car 4 (blue)
 		}
 		if (lane3Car4Y+2 == 18){ // if third part overflows 2 draw at 1
-			img.setRGB(lane3X, 1, (255 << 16) + (175 << 8) + 133); // car 4 (blue)
+			display.setPixelRGB(lane3X, 1, (255 << 16) + (175 << 8) + 133); // car 4 (blue)
 		}
 	}
 //////////////////  LANE 4  /////////////////////////
 	if (lane4Enabled == 1){
-		img.setRGB(lane4X, lane4Car1Y, (150 << 16) + (150 << 8) + 150); // car 1 (grey)
+		display.setPixelRGB(lane4X, lane4Car1Y, (150 << 16) + (150 << 8) + 150); // car 1 (grey)
 
 
-		img.setRGB(lane4X, lane4Car2Y, (0 << 16) + (150 << 8) + 150); // car 2	aqua
+		display.setPixelRGB(lane4X, lane4Car2Y, (0 << 16) + (150 << 8) + 150); // car 2	aqua
 
 		if (lane4Car2Y-1 > -1){ // if second part doesn't overflow, draw 
-			img.setRGB(lane4X, lane4Car2Y-1, (0 << 16) + (150 << 8) + 150); // car 2 
+			display.setPixelRGB(lane4X, lane4Car2Y-1, (0 << 16) + (150 << 8) + 150); // car 2 
 		}
 		if (lane4Car2Y-1 == -1){ // if second part overflows draw at 16
-			img.setRGB(lane4X, 16, (0 << 16) + (150 << 8) + 150); // car 2 
+			display.setPixelRGB(lane4X, 16, (0 << 16) + (150 << 8) + 150); // car 2 
 		}
 
-		img.setRGB(lane4X, lane4Car3Y, (213 << 16) + (0 << 8) + 45); // car 3 (maroon)
+		display.setPixelRGB(lane4X, lane4Car3Y, (213 << 16) + (0 << 8) + 45); // car 3 (maroon)
 
 
-		img.setRGB(lane4X, lane4Car4Y, (0 << 16) + (111 << 8) + 255); // car 4 (sky blue)
+		display.setPixelRGB(lane4X, lane4Car4Y, (0 << 16) + (111 << 8) + 255); // car 4 (sky blue)
 
 		if (lane4Car4Y-1 > -1){ // if second part doesn't overflow draw
-			img.setRGB(lane4X, lane4Car4Y-1, (0 << 16) + (111 << 8) + 255); // car 4 
+			display.setPixelRGB(lane4X, lane4Car4Y-1, (0 << 16) + (111 << 8) + 255); // car 4 
 		}
 		if (lane4Car4Y-1 == -1){ // if second part overflows draw at 16
-			img.setRGB(lane4X, 16, (0 << 16) + (111 << 8) + 255); // car 4 
+			display.setPixelRGB(lane4X, 16, (0 << 16) + (111 << 8) + 255); // car 4 
 		}
 		if (lane4Car4Y-2 > -1){ // if third part doesn't overflow draw
-			img.setRGB(lane4X, lane4Car4Y-2, (0 << 16) + (111 << 8) + 255); // car 4 
+			display.setPixelRGB(lane4X, lane4Car4Y-2, (0 << 16) + (111 << 8) + 255); // car 4 
 		}
 		if (lane4Car4Y-2 == -1){ // if third part overflows 1 draw at 16
-			img.setRGB(lane4X, 16, (0 << 16) + (111 << 8) + 255); // car 4 
+			display.setPixelRGB(lane4X, 16, (0 << 16) + (111 << 8) + 255); // car 4 
 		}
 		if (lane4Car4Y-2 == -2){ // if third part overflows 2 draw at 15
-			img.setRGB(lane4X, 15, (0 << 16) + (111 << 8) + 255); // car 4 
+			display.setPixelRGB(lane4X, 15, (0 << 16) + (111 << 8) + 255); // car 4 
 		}
 	}
 //////////////////  LANE 5  /////////////////////////
 	if (lane5Enabled == 1){
-		img.setRGB(lane5X, lane5Car1Y, (0 << 16) + (255 << 8) + 255); // car 1 (light blue)
+		display.setPixelRGB(lane5X, lane5Car1Y, (0 << 16) + (255 << 8) + 255); // car 1 (light blue)
 
 
-		img.setRGB(lane5X, lane5Car2Y, (255 << 16) + (145 << 8) + 0); // car 2
+		display.setPixelRGB(lane5X, lane5Car2Y, (255 << 16) + (145 << 8) + 0); // car 2
 
 		if (lane5Car2Y+1 < 17){ // if second part overflows draw at 0
-			img.setRGB(lane5X, lane5Car2Y+1, (255 << 16) + (145 << 8) + 0); // car 2 (pink)
+			display.setPixelRGB(lane5X, lane5Car2Y+1, (255 << 16) + (145 << 8) + 0); // car 2 (pink)
 		}
 		if (lane5Car2Y+1 == 17){ // if second part overflows draw at 0
-			img.setRGB(lane5X, 0, (255 << 16) + (145 << 8) + 0); // car 2 (greenbrown)
+			display.setPixelRGB(lane5X, 0, (255 << 16) + (145 << 8) + 0); // car 2 (greenbrown)
 		}
 
-		img.setRGB(lane5X, lane5Car3Y, (200 << 16) + (250 << 8) + 150); // car 3 (pastel green)
+		display.setPixelRGB(lane5X, lane5Car3Y, (200 << 16) + (250 << 8) + 150); // car 3 (pastel green)
 
 
-		img.setRGB(lane5X, lane5Car4Y, (255 << 16) + (0 << 8) + 150); // car 4 (hot pink)
+		display.setPixelRGB(lane5X, lane5Car4Y, (255 << 16) + (0 << 8) + 150); // car 4 (hot pink)
 
 		if (lane5Car4Y+1 < 17){ // if second part doesn't overflow draw
-			img.setRGB(lane5X, lane5Car4Y+1, (255 << 16) + (0 << 8) + 150); // car 4 
+			display.setPixelRGB(lane5X, lane5Car4Y+1, (255 << 16) + (0 << 8) + 150); // car 4 
 		}
 		if (lane5Car4Y+1 == 17){ // if second part overflows draw at 0
-			img.setRGB(lane5X, 0, (255 << 16) + (0 << 8) + 150); // car 4 
+			display.setPixelRGB(lane5X, 0, (255 << 16) + (0 << 8) + 150); // car 4 
 		}
 		if (lane5Car4Y+2 < 17){ // if third part doesn't overflow draw
-			img.setRGB(lane5X, lane5Car4Y+2, (255 << 16) + (0 << 8) + 150); // car 4 
+			display.setPixelRGB(lane5X, lane5Car4Y+2, (255 << 16) + (0 << 8) + 150); // car 4 
 		}
 		if (lane5Car4Y+2 == 17){ // if third part overflows 1 draw at 0
-			img.setRGB(lane5X, 0, (255 << 16) + (0 << 8) + 150); // car 4 
+			display.setPixelRGB(lane5X, 0, (255 << 16) + (0 << 8) + 150); // car 4 
 		}
 		if (lane5Car4Y+2 == 18){ // if third part overflows 2 draw at 1
-			img.setRGB(lane5X, 1, (255 << 16) + (0 << 8) + 150); // car 4 
+			display.setPixelRGB(lane5X, 1, (255 << 16) + (0 << 8) + 150); // car 4 
 		}
 	}
 //////////////////  LANE 6  /////////////////////////
 	if (lane6Enabled == 1){
-		img.setRGB(lane6X, lane6Car1Y, (255 << 16) + (255 << 8) + 0); // car 1 (yellow)
+		display.setPixelRGB(lane6X, lane6Car1Y, (255 << 16) + (255 << 8) + 0); // car 1 (yellow)
 
 
-		img.setRGB(lane6X, lane6Car2Y, (0 << 16) + (130 << 8) + 130); // car 2	dark green
+		display.setPixelRGB(lane6X, lane6Car2Y, (0 << 16) + (130 << 8) + 130); // car 2	dark green
 
 		if (lane6Car2Y-1 > -1){ // if second part doesn't overflow, draw 
-			img.setRGB(lane6X, lane6Car2Y-1, (0 << 16) + (130 << 8) + 130); // car 2 
+			display.setPixelRGB(lane6X, lane6Car2Y-1, (0 << 16) + (130 << 8) + 130); // car 2 
 		}
 		if (lane6Car2Y-1 == -1){ // if second part overflows draw at 16
-			img.setRGB(lane6X, 16, (0 << 16) + (130 << 8) + 130); // car 2 
+			display.setPixelRGB(lane6X, 16, (0 << 16) + (130 << 8) + 130); // car 2 
 		}
 
-		img.setRGB(lane6X, lane6Car3Y, (190 << 16) + (0 << 8) + 255); // car 3 (purple)
+		display.setPixelRGB(lane6X, lane6Car3Y, (190 << 16) + (0 << 8) + 255); // car 3 (purple)
 
 
-		img.setRGB(lane6X, lane6Car4Y, (255 << 16) + (0 << 8) + 0); // car 4 (RED)
+		display.setPixelRGB(lane6X, lane6Car4Y, (255 << 16) + (0 << 8) + 0); // car 4 (RED)
 
 		if (lane6Car4Y-1 > -1){ // if second part doesn't overflow draw
-			img.setRGB(lane6X, lane6Car4Y-1, (255 << 16) + (0 << 8) + 0); // car 4 
+			display.setPixelRGB(lane6X, lane6Car4Y-1, (255 << 16) + (0 << 8) + 0); // car 4 
 		}
 		if (lane6Car4Y-1 == -1){ // if second part overflows draw at 16
-			img.setRGB(lane6X, 16, (255 << 16) + (0 << 8) + 0); // car 4 
+			display.setPixelRGB(lane6X, 16, (255 << 16) + (0 << 8) + 0); // car 4 
 		}
 		if (lane6Car4Y-2 > -1){ // if third part doesn't overflow draw
-			img.setRGB(lane6X, lane6Car4Y-2, (255 << 16) + (0 << 8) + 0); // car 4 
+			display.setPixelRGB(lane6X, lane6Car4Y-2, (255 << 16) + (0 << 8) + 0); // car 4 
 		}
 		if (lane6Car4Y-2 == -1){ // if third part overflows 1 draw at 16
-			img.setRGB(lane6X, 16, (255 << 16) + (0 << 8) + 0); // car 4 
+			display.setPixelRGB(lane6X, 16, (255 << 16) + (0 << 8) + 0); // car 4 
 		}
 		if (lane6Car4Y-2 == -2){ // if third part overflows 2 draw at 15
-			img.setRGB(lane6X, 15, (255 << 16) + (0 << 8) + 0); // car 4 
+			display.setPixelRGB(lane6X, 15, (255 << 16) + (0 << 8) + 0); // car 4 
 		}
 	}
 
@@ -1254,143 +1240,141 @@ public class FrogPlugin extends DisplayPlugin {
 	}
 
 	public void clearScreen()
-	{
-		BufferedImage img=display.getImage();
-	      for (int y = 0;y < 17; y++){
-		for (int x = 0;x < 9; x++){
+	{	
+		for (int y = 0;y < 17; y++){
+			for (int x = 0;x < 9; x++){
 
-		img.setRGB(x, y, (0 << 16) + (0 << 8) + 0); // black pixel
+				display.setPixelRGB(x, y, (0 << 16) + (0 << 8) + 0); // black pixel
 
+			}
 		}
-	      }
 	}
 
 
-private void showWin()
+	private void showWin()
 	{
 
 		int R, G, B;
-		BufferedImage img=display.getImage();
 		R = 0;
 		G = 255;
 		B = 0;
-		img.setRGB(0, 0, (R << 16) + (G << 8) + B);		// Brightest Green
-		img.setRGB(1, 0, (R << 16) + (G << 8) + B);
-		img.setRGB(3, 0, (R << 16) + (G << 8) + B);		// W
-		img.setRGB(4, 0, (R << 16) + (G << 8) + B); 
-		img.setRGB(6, 0, (R << 16) + (G << 8) + B);
-		img.setRGB(7, 0, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(0, 0, (R << 16) + (G << 8) + B);		// Brightest Green
+		display.setPixelRGB(1, 0, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(3, 0, (R << 16) + (G << 8) + B);		// W
+		display.setPixelRGB(4, 0, (R << 16) + (G << 8) + B); 
+		display.setPixelRGB(6, 0, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(7, 0, (R << 16) + (G << 8) + B);
 		
-		img.setRGB(0, 1, (R << 16) + (G << 8) + B);		
-		img.setRGB(1, 1, (R << 16) + (G << 8) + B);
-		img.setRGB(3, 1, (R << 16) + (G << 8) + B);		
-		img.setRGB(4, 1, (R << 16) + (G << 8) + B); 
-		img.setRGB(6, 1, (R << 16) + (G << 8) + B);
-		img.setRGB(7, 1, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(0, 1, (R << 16) + (G << 8) + B);		
+		display.setPixelRGB(1, 1, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(3, 1, (R << 16) + (G << 8) + B);		
+		display.setPixelRGB(4, 1, (R << 16) + (G << 8) + B); 
+		display.setPixelRGB(6, 1, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(7, 1, (R << 16) + (G << 8) + B);
 
-		img.setRGB(0, 2, (R << 16) + (G << 8) + B);		
-		img.setRGB(1, 2, (R << 16) + (G << 8) + B);
-		img.setRGB(3, 2, (R << 16) + (G << 8) + B);		
-		img.setRGB(4, 2, (R << 16) + (G << 8) + B); 
-		img.setRGB(6, 2, (R << 16) + (G << 8) + B);
-		img.setRGB(7, 2, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(0, 2, (R << 16) + (G << 8) + B);		
+		display.setPixelRGB(1, 2, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(3, 2, (R << 16) + (G << 8) + B);		
+		display.setPixelRGB(4, 2, (R << 16) + (G << 8) + B); 
+		display.setPixelRGB(6, 2, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(7, 2, (R << 16) + (G << 8) + B);
 		
-		img.setRGB(0, 3, (R << 16) + (G << 8) + B);
-		img.setRGB(1, 3, (R << 16) + (G << 8) + B);
-		img.setRGB(2, 3, (R << 16) + (G << 8) + B);
-		img.setRGB(3, 3, (R << 16) + (G << 8) + B);
-		img.setRGB(4, 3, (R << 16) + (G << 8) + B);
-		img.setRGB(5, 3, (R << 16) + (G << 8) + B);
-		img.setRGB(6, 3, (R << 16) + (G << 8) + B);
-		img.setRGB(7, 3, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(0, 3, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(1, 3, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(2, 3, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(3, 3, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(4, 3, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(5, 3, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(6, 3, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(7, 3, (R << 16) + (G << 8) + B);
 
-		img.setRGB(1, 4, (R << 16) + (G << 8) + B);
-		img.setRGB(2, 4, (R << 16) + (G << 8) + B);
-		img.setRGB(3, 4, (R << 16) + (G << 8) + B);
-		img.setRGB(4, 4, (R << 16) + (G << 8) + B);
-		img.setRGB(5, 4, (R << 16) + (G << 8) + B);
-		img.setRGB(6, 4, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(1, 4, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(2, 4, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(3, 4, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(4, 4, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(5, 4, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(6, 4, (R << 16) + (G << 8) + B);
 
 		R = 125;
 		G = 255;
 		B = 128;
 
-		img.setRGB(1, 5, (R << 16) + (G << 8) + B);		// FADED Green
-		img.setRGB(2, 5, (R << 16) + (G << 8) + B);
-		img.setRGB(3, 5, (R << 16) + (G << 8) + B);		// I
-		img.setRGB(4, 5, (R << 16) + (G << 8) + B); 
-		img.setRGB(5, 5, (R << 16) + (G << 8) + B);
-		img.setRGB(6, 5, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(1, 5, (R << 16) + (G << 8) + B);		// FADED Green
+		display.setPixelRGB(2, 5, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(3, 5, (R << 16) + (G << 8) + B);		// I
+		display.setPixelRGB(4, 5, (R << 16) + (G << 8) + B); 
+		display.setPixelRGB(5, 5, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(6, 5, (R << 16) + (G << 8) + B);
 		
-		img.setRGB(1, 6, (R << 16) + (G << 8) + B);		
-		img.setRGB(2, 6, (R << 16) + (G << 8) + B);
-		img.setRGB(3, 6, (R << 16) + (G << 8) + B);		
-		img.setRGB(4, 6, (R << 16) + (G << 8) + B); 
-		img.setRGB(5, 6, (R << 16) + (G << 8) + B);
-		img.setRGB(6, 6, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(1, 6, (R << 16) + (G << 8) + B);		
+		display.setPixelRGB(2, 6, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(3, 6, (R << 16) + (G << 8) + B);		
+		display.setPixelRGB(4, 6, (R << 16) + (G << 8) + B); 
+		display.setPixelRGB(5, 6, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(6, 6, (R << 16) + (G << 8) + B);
 
-		img.setRGB(3, 7, (R << 16) + (G << 8) + B);		
-		img.setRGB(4, 7, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(3, 7, (R << 16) + (G << 8) + B);		
+		display.setPixelRGB(4, 7, (R << 16) + (G << 8) + B);
 
-		img.setRGB(3, 8, (R << 16) + (G << 8) + B);		
-		img.setRGB(4, 8, (R << 16) + (G << 8) + B); 
+		display.setPixelRGB(3, 8, (R << 16) + (G << 8) + B);		
+		display.setPixelRGB(4, 8, (R << 16) + (G << 8) + B); 
 
-		img.setRGB(3, 9, (R << 16) + (G << 8) + B);
-		img.setRGB(4, 9, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(3, 9, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(4, 9, (R << 16) + (G << 8) + B);
 		
-		img.setRGB(1, 10, (R << 16) + (G << 8) + B);
-		img.setRGB(2, 10, (R << 16) + (G << 8) + B);
-		img.setRGB(3, 10, (R << 16) + (G << 8) + B);
-		img.setRGB(4, 10, (R << 16) + (G << 8) + B);
-		img.setRGB(5, 10, (R << 16) + (G << 8) + B);
-		img.setRGB(6, 10, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(1, 10, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(2, 10, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(3, 10, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(4, 10, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(5, 10, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(6, 10, (R << 16) + (G << 8) + B);
 
-		img.setRGB(1, 11, (R << 16) + (G << 8) + B);
-		img.setRGB(2, 11, (R << 16) + (G << 8) + B);
-		img.setRGB(3, 11, (R << 16) + (G << 8) + B);
-		img.setRGB(4, 11, (R << 16) + (G << 8) + B);
-		img.setRGB(5, 11, (R << 16) + (G << 8) + B);
-		img.setRGB(6, 11, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(1, 11, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(2, 11, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(3, 11, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(4, 11, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(5, 11, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(6, 11, (R << 16) + (G << 8) + B);
 
 		R = 176;
 		G = 255;
 		B = 0;
 
-		img.setRGB(0, 12, (R << 16) + (G << 8) + B);		// Other Green
-		img.setRGB(0, 13, (R << 16) + (G << 8) + B);
-		img.setRGB(0, 14, (R << 16) + (G << 8) + B);		// N
-		img.setRGB(0, 15, (R << 16) + (G << 8) + B); 
-		img.setRGB(0, 16, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(0, 12, (R << 16) + (G << 8) + B);		// Other Green
+		display.setPixelRGB(0, 13, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(0, 14, (R << 16) + (G << 8) + B);		// N
+		display.setPixelRGB(0, 15, (R << 16) + (G << 8) + B); 
+		display.setPixelRGB(0, 16, (R << 16) + (G << 8) + B);
 		
-		img.setRGB(1, 12, (R << 16) + (G << 8) + B);		
-		img.setRGB(1, 13, (R << 16) + (G << 8) + B);
-		img.setRGB(1, 14, (R << 16) + (G << 8) + B);		
-		img.setRGB(1, 15, (R << 16) + (G << 8) + B); 
-		img.setRGB(1, 16, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(1, 12, (R << 16) + (G << 8) + B);		
+		display.setPixelRGB(1, 13, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(1, 14, (R << 16) + (G << 8) + B);		
+		display.setPixelRGB(1, 15, (R << 16) + (G << 8) + B); 
+		display.setPixelRGB(1, 16, (R << 16) + (G << 8) + B);
 
-		img.setRGB(6, 12, (R << 16) + (G << 8) + B);		
-		img.setRGB(6, 13, (R << 16) + (G << 8) + B);
-		img.setRGB(6, 14, (R << 16) + (G << 8) + B);		
-		img.setRGB(6, 15, (R << 16) + (G << 8) + B); 
-		img.setRGB(6, 16, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(6, 12, (R << 16) + (G << 8) + B);		
+		display.setPixelRGB(6, 13, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(6, 14, (R << 16) + (G << 8) + B);		
+		display.setPixelRGB(6, 15, (R << 16) + (G << 8) + B); 
+		display.setPixelRGB(6, 16, (R << 16) + (G << 8) + B);
 		
-		img.setRGB(7, 12, (R << 16) + (G << 8) + B);		
-		img.setRGB(7, 13, (R << 16) + (G << 8) + B);
-		img.setRGB(7, 14, (R << 16) + (G << 8) + B);		
-		img.setRGB(7, 15, (R << 16) + (G << 8) + B); 
-		img.setRGB(7, 16, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(7, 12, (R << 16) + (G << 8) + B);		
+		display.setPixelRGB(7, 13, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(7, 14, (R << 16) + (G << 8) + B);		
+		display.setPixelRGB(7, 15, (R << 16) + (G << 8) + B); 
+		display.setPixelRGB(7, 16, (R << 16) + (G << 8) + B);
 
-		img.setRGB(2, 12, (R << 16) + (G << 8) + B);		
-		img.setRGB(2, 13, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(2, 12, (R << 16) + (G << 8) + B);		
+		display.setPixelRGB(2, 13, (R << 16) + (G << 8) + B);
 
-		img.setRGB(3, 13, (R << 16) + (G << 8) + B);		
-		img.setRGB(3, 14, (R << 16) + (G << 8) + B); 
+		display.setPixelRGB(3, 13, (R << 16) + (G << 8) + B);		
+		display.setPixelRGB(3, 14, (R << 16) + (G << 8) + B); 
 
-		img.setRGB(4, 14, (R << 16) + (G << 8) + B);
-		img.setRGB(4, 15, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(4, 14, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(4, 15, (R << 16) + (G << 8) + B);
 		
-		img.setRGB(5, 15, (R << 16) + (G << 8) + B);
-		img.setRGB(5, 16, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(5, 15, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(5, 16, (R << 16) + (G << 8) + B);
 
 
 	}
@@ -1399,33 +1383,32 @@ private void showWin()
 	{
 
 		int R, G, B;
-		BufferedImage img=display.getImage();
 		R = 0;
 		G = 255;
 		B = 0;
-		img.setRGB(2, 1, (R << 16) + (G << 8) + B);		// Brightest Green
-		img.setRGB(2, 2, (R << 16) + (G << 8) + B);
-		img.setRGB(2, 3, (R << 16) + (G << 8) + B);		// L
-		img.setRGB(2, 4, (R << 16) + (G << 8) + B); 
-		img.setRGB(2, 5, (R << 16) + (G << 8) + B);
-		img.setRGB(2, 6, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(2, 1, (R << 16) + (G << 8) + B);		// Brightest Green
+		display.setPixelRGB(2, 2, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(2, 3, (R << 16) + (G << 8) + B);		// L
+		display.setPixelRGB(2, 4, (R << 16) + (G << 8) + B); 
+		display.setPixelRGB(2, 5, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(2, 6, (R << 16) + (G << 8) + B);
 		
-		img.setRGB(3, 1, (R << 16) + (G << 8) + B);		
-		img.setRGB(3, 2, (R << 16) + (G << 8) + B);
-		img.setRGB(3, 3, (R << 16) + (G << 8) + B);		
-		img.setRGB(3, 4, (R << 16) + (G << 8) + B); 
-		img.setRGB(3, 5, (R << 16) + (G << 8) + B);
-		img.setRGB(3, 6, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(3, 1, (R << 16) + (G << 8) + B);		
+		display.setPixelRGB(3, 2, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(3, 3, (R << 16) + (G << 8) + B);		
+		display.setPixelRGB(3, 4, (R << 16) + (G << 8) + B); 
+		display.setPixelRGB(3, 5, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(3, 6, (R << 16) + (G << 8) + B);
 		
-		img.setRGB(4, 5, (R << 16) + (G << 8) + B);
-		img.setRGB(5, 5, (R << 16) + (G << 8) + B);
-		img.setRGB(6, 5, (R << 16) + (G << 8) + B);
-		img.setRGB(7, 5, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(4, 5, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(5, 5, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(6, 5, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(7, 5, (R << 16) + (G << 8) + B);
 
-		img.setRGB(4, 6, (R << 16) + (G << 8) + B);
-		img.setRGB(5, 6, (R << 16) + (G << 8) + B);
-		img.setRGB(6, 6, (R << 16) + (G << 8) + B);
-		img.setRGB(7, 6, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(4, 6, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(5, 6, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(6, 6, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(7, 6, (R << 16) + (G << 8) + B);
 
 	}
 
@@ -1433,7 +1416,6 @@ private void showWin()
 	{
 
 		int R, G, B;
-		BufferedImage img=display.getImage();
 
 		switch (levelNumber)
 			{
@@ -1443,31 +1425,31 @@ private void showWin()
 				G = 255;
 				B = 0;
 
-				img.setRGB(4, 9, (R << 16) + (G << 8) + B);		// Brightest Green
-				img.setRGB(4, 10, (R << 16) + (G << 8) + B);		
-				img.setRGB(4, 11, (R << 16) + (G << 8) + B);		// 1
-				img.setRGB(4, 12, (R << 16) + (G << 8) + B); 
-				img.setRGB(4, 13, (R << 16) + (G << 8) + B);
-				img.setRGB(4, 14, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(4, 9, (R << 16) + (G << 8) + B);		// Brightest Green
+				display.setPixelRGB(4, 10, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(4, 11, (R << 16) + (G << 8) + B);		// 1
+				display.setPixelRGB(4, 12, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(4, 13, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(4, 14, (R << 16) + (G << 8) + B);
 		
-				img.setRGB(5, 9, (R << 16) + (G << 8) + B);		
-				img.setRGB(5, 10, (R << 16) + (G << 8) + B);
-				img.setRGB(5, 11, (R << 16) + (G << 8) + B);		
-				img.setRGB(5, 12, (R << 16) + (G << 8) + B); 
-				img.setRGB(5, 13, (R << 16) + (G << 8) + B);
-				img.setRGB(5, 14, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 9, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(5, 10, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 11, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(5, 12, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(5, 13, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 14, (R << 16) + (G << 8) + B);
 		
-				img.setRGB(3, 15, (R << 16) + (G << 8) + B);
-				img.setRGB(4, 15, (R << 16) + (G << 8) + B);
-				img.setRGB(5, 15, (R << 16) + (G << 8) + B);
-				img.setRGB(6, 15, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(3, 15, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(4, 15, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 15, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(6, 15, (R << 16) + (G << 8) + B);
 
-				img.setRGB(3, 16, (R << 16) + (G << 8) + B);
-				img.setRGB(4, 16, (R << 16) + (G << 8) + B);
-				img.setRGB(5, 16, (R << 16) + (G << 8) + B);
-				img.setRGB(6, 16, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(3, 16, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(4, 16, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 16, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(6, 16, (R << 16) + (G << 8) + B);
 
-				img.setRGB(3, 10, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(3, 10, (R << 16) + (G << 8) + B);
 
 
 				break;
@@ -1477,34 +1459,34 @@ private void showWin()
 				G = 255;
 				B = 0;
 
-				img.setRGB(5, 9, (R << 16) + (G << 8) + B);		// Brightest Green
-				img.setRGB(6, 10, (R << 16) + (G << 8) + B);		
-				img.setRGB(7, 11, (R << 16) + (G << 8) + B);		// 2
-				img.setRGB(6, 12, (R << 16) + (G << 8) + B); 
-				img.setRGB(5, 13, (R << 16) + (G << 8) + B);
-				img.setRGB(4, 14, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 9, (R << 16) + (G << 8) + B);		// Brightest Green
+				display.setPixelRGB(6, 10, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(7, 11, (R << 16) + (G << 8) + B);		// 2
+				display.setPixelRGB(6, 12, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(5, 13, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(4, 14, (R << 16) + (G << 8) + B);
 		
-				img.setRGB(4, 9, (R << 16) + (G << 8) + B);		
-				img.setRGB(5, 10, (R << 16) + (G << 8) + B);
-				img.setRGB(6, 11, (R << 16) + (G << 8) + B);		
-				img.setRGB(5, 12, (R << 16) + (G << 8) + B); 
-				img.setRGB(4, 13, (R << 16) + (G << 8) + B);
-				img.setRGB(3, 14, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(4, 9, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(5, 10, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(6, 11, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(5, 12, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(4, 13, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(3, 14, (R << 16) + (G << 8) + B);
 		
-				img.setRGB(3, 15, (R << 16) + (G << 8) + B);
-				img.setRGB(4, 15, (R << 16) + (G << 8) + B);
-				img.setRGB(5, 15, (R << 16) + (G << 8) + B);
-				img.setRGB(6, 15, (R << 16) + (G << 8) + B);
-				img.setRGB(7, 15, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(3, 15, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(4, 15, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 15, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(6, 15, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(7, 15, (R << 16) + (G << 8) + B);
 
-				img.setRGB(3, 16, (R << 16) + (G << 8) + B);
-				img.setRGB(4, 16, (R << 16) + (G << 8) + B);
-				img.setRGB(5, 16, (R << 16) + (G << 8) + B);
-				img.setRGB(6, 16, (R << 16) + (G << 8) + B);
-				img.setRGB(7, 16, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(3, 16, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(4, 16, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 16, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(6, 16, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(7, 16, (R << 16) + (G << 8) + B);
 
-				img.setRGB(3, 10, (R << 16) + (G << 8) + B);
-				img.setRGB(4, 10, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(3, 10, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(4, 10, (R << 16) + (G << 8) + B);
 
 
 
@@ -1516,36 +1498,36 @@ private void showWin()
 				G = 255;
 				B = 0;
 
-				img.setRGB(3, 9, (R << 16) + (G << 8) + B);		// Brightest Green
-				img.setRGB(4, 9, (R << 16) + (G << 8) + B);		
-				img.setRGB(5, 9, (R << 16) + (G << 8) + B);		// 3
-				img.setRGB(6, 9, (R << 16) + (G << 8) + B); 
-				img.setRGB(3, 10, (R << 16) + (G << 8) + B);		
-				img.setRGB(4, 10, (R << 16) + (G << 8) + B);		
-				img.setRGB(5, 10, (R << 16) + (G << 8) + B);		
-				img.setRGB(6, 10, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(3, 9, (R << 16) + (G << 8) + B);		// Brightest Green
+				display.setPixelRGB(4, 9, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(5, 9, (R << 16) + (G << 8) + B);		// 3
+				display.setPixelRGB(6, 9, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(3, 10, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(4, 10, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(5, 10, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(6, 10, (R << 16) + (G << 8) + B); 
 
-				img.setRGB(6, 11, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(6, 11, (R << 16) + (G << 8) + B); 
 
-				img.setRGB(3, 12, (R << 16) + (G << 8) + B);		
-				img.setRGB(4, 12, (R << 16) + (G << 8) + B);		
-				img.setRGB(5, 12, (R << 16) + (G << 8) + B);		
-				img.setRGB(6, 12, (R << 16) + (G << 8) + B); 
-				img.setRGB(3, 13, (R << 16) + (G << 8) + B);		
-				img.setRGB(4, 13, (R << 16) + (G << 8) + B);		
-				img.setRGB(5, 13, (R << 16) + (G << 8) + B);		
-				img.setRGB(6, 13, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(3, 12, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(4, 12, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(5, 12, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(6, 12, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(3, 13, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(4, 13, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(5, 13, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(6, 13, (R << 16) + (G << 8) + B); 
 
-				img.setRGB(6, 14, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(6, 14, (R << 16) + (G << 8) + B);
 
-				img.setRGB(3, 15, (R << 16) + (G << 8) + B);		
-				img.setRGB(4, 15, (R << 16) + (G << 8) + B);		
-				img.setRGB(5, 15, (R << 16) + (G << 8) + B);		
-				img.setRGB(6, 15, (R << 16) + (G << 8) + B); 
-				img.setRGB(3, 16, (R << 16) + (G << 8) + B);		
-				img.setRGB(4, 16, (R << 16) + (G << 8) + B);		
-				img.setRGB(5, 16, (R << 16) + (G << 8) + B);		
-				img.setRGB(6, 16, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(3, 15, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(4, 15, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(5, 15, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(6, 15, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(3, 16, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(4, 16, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(5, 16, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(6, 16, (R << 16) + (G << 8) + B);
 		
 
 				break;
@@ -1555,37 +1537,37 @@ private void showWin()
 				G = 255;
 				B = 0;
 
-				img.setRGB(3, 9, (R << 16) + (G << 8) + B);		// Brightest Green
-				img.setRGB(3, 10, (R << 16) + (G << 8) + B);		
-				img.setRGB(3, 11, (R << 16) + (G << 8) + B);		// 4
-				img.setRGB(3, 12, (R << 16) + (G << 8) + B); 
-				img.setRGB(3, 13, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(3, 9, (R << 16) + (G << 8) + B);		// Brightest Green
+				display.setPixelRGB(3, 10, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(3, 11, (R << 16) + (G << 8) + B);		// 4
+				display.setPixelRGB(3, 12, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(3, 13, (R << 16) + (G << 8) + B);	
 
-				img.setRGB(2, 9, (R << 16) + (G << 8) + B);	
-				img.setRGB(2, 10, (R << 16) + (G << 8) + B);		
-				img.setRGB(2, 11, (R << 16) + (G << 8) + B);		
-				img.setRGB(2, 12, (R << 16) + (G << 8) + B); 
-				img.setRGB(2, 13, (R << 16) + (G << 8) + B);
-				img.setRGB(2, 14, (R << 16) + (G << 8) + B); 
-				img.setRGB(2, 15, (R << 16) + (G << 8) + B);	 
+				display.setPixelRGB(2, 9, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(2, 10, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(2, 11, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(2, 12, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(2, 13, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(2, 14, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(2, 15, (R << 16) + (G << 8) + B);	 
 
-				img.setRGB(3, 14, (R << 16) + (G << 8) + B);		
-				img.setRGB(4, 14, (R << 16) + (G << 8) + B);		
-				img.setRGB(5, 14, (R << 16) + (G << 8) + B);		
-				img.setRGB(6, 14, (R << 16) + (G << 8) + B); 
-				img.setRGB(7, 14, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(3, 14, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(4, 14, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(5, 14, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(6, 14, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(7, 14, (R << 16) + (G << 8) + B);
 
-				img.setRGB(3, 15, (R << 16) + (G << 8) + B);		
-				img.setRGB(4, 15, (R << 16) + (G << 8) + B);		
-				img.setRGB(5, 15, (R << 16) + (G << 8) + B);		
-				img.setRGB(6, 15, (R << 16) + (G << 8) + B); 
-				img.setRGB(7, 15, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(3, 15, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(4, 15, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(5, 15, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(6, 15, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(7, 15, (R << 16) + (G << 8) + B);
 
-				img.setRGB(5, 13, (R << 16) + (G << 8) + B);
-				img.setRGB(6, 13, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 13, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(6, 13, (R << 16) + (G << 8) + B);
 
-				img.setRGB(5, 16, (R << 16) + (G << 8) + B);
-				img.setRGB(6, 16, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 16, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(6, 16, (R << 16) + (G << 8) + B);
 
 
 				break;
@@ -1595,43 +1577,43 @@ private void showWin()
 				G = 255;
 				B = 0;
 
-				img.setRGB(3, 9, (R << 16) + (G << 8) + B);		// Brightest Green
-				img.setRGB(4, 9, (R << 16) + (G << 8) + B);		
-				img.setRGB(5, 9, (R << 16) + (G << 8) + B);		// 5
-				img.setRGB(6, 9, (R << 16) + (G << 8) + B); 
-				img.setRGB(7, 9, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(3, 9, (R << 16) + (G << 8) + B);		// Brightest Green
+				display.setPixelRGB(4, 9, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(5, 9, (R << 16) + (G << 8) + B);		// 5
+				display.setPixelRGB(6, 9, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(7, 9, (R << 16) + (G << 8) + B);	
 
-				img.setRGB(3, 10, (R << 16) + (G << 8) + B);	
-				img.setRGB(4, 10, (R << 16) + (G << 8) + B);		
-				img.setRGB(5, 10, (R << 16) + (G << 8) + B);		
-				img.setRGB(6, 10, (R << 16) + (G << 8) + B); 
-				img.setRGB(7, 10, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(3, 10, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(4, 10, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(5, 10, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(6, 10, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(7, 10, (R << 16) + (G << 8) + B);	
 
-				img.setRGB(3, 11, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(3, 11, (R << 16) + (G << 8) + B);
 
-				img.setRGB(3, 12, (R << 16) + (G << 8) + B);	
-				img.setRGB(4, 12, (R << 16) + (G << 8) + B);		
-				img.setRGB(5, 12, (R << 16) + (G << 8) + B);		
-				img.setRGB(6, 12, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(3, 12, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(4, 12, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(5, 12, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(6, 12, (R << 16) + (G << 8) + B); 
 
-				img.setRGB(3, 13, (R << 16) + (G << 8) + B);	
-				img.setRGB(4, 13, (R << 16) + (G << 8) + B);		
-				img.setRGB(5, 13, (R << 16) + (G << 8) + B);		
-				img.setRGB(6, 13, (R << 16) + (G << 8) + B); 
-				img.setRGB(7, 13, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(3, 13, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(4, 13, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(5, 13, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(6, 13, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(7, 13, (R << 16) + (G << 8) + B);
 
-				img.setRGB(7, 14, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(7, 14, (R << 16) + (G << 8) + B);
 
-				img.setRGB(3, 15, (R << 16) + (G << 8) + B);	
-				img.setRGB(4, 15, (R << 16) + (G << 8) + B);		
-				img.setRGB(5, 15, (R << 16) + (G << 8) + B);		
-				img.setRGB(6, 15, (R << 16) + (G << 8) + B); 
-				img.setRGB(7, 15, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(3, 15, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(4, 15, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(5, 15, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(6, 15, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(7, 15, (R << 16) + (G << 8) + B);
 
-				img.setRGB(3, 16, (R << 16) + (G << 8) + B);	
-				img.setRGB(4, 16, (R << 16) + (G << 8) + B);		
-				img.setRGB(5, 16, (R << 16) + (G << 8) + B);		
-				img.setRGB(6, 16, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(3, 16, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(4, 16, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(5, 16, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(6, 16, (R << 16) + (G << 8) + B);
 
 				break;
 			case 6:
@@ -1640,27 +1622,27 @@ private void showWin()
 				G = 255;
 				B = 0;
 
-				img.setRGB(4, 9, (R << 16) + (G << 8) + B);		// Brightest Green
-				img.setRGB(3, 10, (R << 16) + (G << 8) + B);	
-				img.setRGB(3, 9, (R << 16) + (G << 8) + B);
-				img.setRGB(2, 10, (R << 16) + (G << 8) + B);	
-				img.setRGB(2, 11, (R << 16) + (G << 8) + B);		// 6
-				img.setRGB(2, 12, (R << 16) + (G << 8) + B); 
-				img.setRGB(2, 13, (R << 16) + (G << 8) + B);	
-				img.setRGB(2, 14, (R << 16) + (G << 8) + B);
-				img.setRGB(2, 15, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(4, 9, (R << 16) + (G << 8) + B);		// Brightest Green
+				display.setPixelRGB(3, 10, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(3, 9, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(2, 10, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(2, 11, (R << 16) + (G << 8) + B);		// 6
+				display.setPixelRGB(2, 12, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(2, 13, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(2, 14, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(2, 15, (R << 16) + (G << 8) + B);
 
-				img.setRGB(3, 15, (R << 16) + (G << 8) + B);
-				img.setRGB(4, 15, (R << 16) + (G << 8) + B);
-				img.setRGB(5, 15, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(3, 15, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(4, 15, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 15, (R << 16) + (G << 8) + B);
 
-				img.setRGB(6, 14, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(6, 14, (R << 16) + (G << 8) + B);
 
-				img.setRGB(6, 13, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(6, 13, (R << 16) + (G << 8) + B);
 
-				img.setRGB(3, 12, (R << 16) + (G << 8) + B);
-				img.setRGB(4, 12, (R << 16) + (G << 8) + B);
-				img.setRGB(5, 12, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(3, 12, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(4, 12, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 12, (R << 16) + (G << 8) + B);
 
 
 				break;
@@ -1670,32 +1652,32 @@ private void showWin()
 				G = 255;
 				B = 0;
 
-				img.setRGB(2, 9, (R << 16) + (G << 8) + B);		// Brightest Green
-				img.setRGB(3, 9, (R << 16) + (G << 8) + B);	
-				img.setRGB(4, 9, (R << 16) + (G << 8) + B);
-				img.setRGB(5, 9, (R << 16) + (G << 8) + B);	
-				img.setRGB(6, 9, (R << 16) + (G << 8) + B);		// 7
+				display.setPixelRGB(2, 9, (R << 16) + (G << 8) + B);		// Brightest Green
+				display.setPixelRGB(3, 9, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(4, 9, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 9, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(6, 9, (R << 16) + (G << 8) + B);		// 7
 
-				img.setRGB(2, 10, (R << 16) + (G << 8) + B);		
-				img.setRGB(3, 10, (R << 16) + (G << 8) + B);	
-				img.setRGB(4, 10, (R << 16) + (G << 8) + B);
-				img.setRGB(5, 10, (R << 16) + (G << 8) + B);	
-				img.setRGB(6, 10, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(2, 10, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(3, 10, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(4, 10, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 10, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(6, 10, (R << 16) + (G << 8) + B);		
 
-				img.setRGB(5, 11, (R << 16) + (G << 8) + B);
-				img.setRGB(6, 11, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 11, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(6, 11, (R << 16) + (G << 8) + B);
 
-				img.setRGB(5, 12, (R << 16) + (G << 8) + B);
-				img.setRGB(6, 12, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 12, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(6, 12, (R << 16) + (G << 8) + B);
 
-				img.setRGB(4, 13, (R << 16) + (G << 8) + B);
-				img.setRGB(5, 13, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(4, 13, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 13, (R << 16) + (G << 8) + B);
 
-				img.setRGB(3, 14, (R << 16) + (G << 8) + B);
-				img.setRGB(4, 14, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(3, 14, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(4, 14, (R << 16) + (G << 8) + B);
 
-				img.setRGB(2, 15, (R << 16) + (G << 8) + B);
-				img.setRGB(3, 15, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(2, 15, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(3, 15, (R << 16) + (G << 8) + B);
 
 
 				break;
@@ -1705,45 +1687,45 @@ private void showWin()
 				G = 255;
 				B = 0;
 
-				//img.setRGB(2, 8, (R << 16) + (G << 8) + B);		// Brightest Green
-				img.setRGB(3, 8, (R << 16) + (G << 8) + B);	
-				img.setRGB(4, 8, (R << 16) + (G << 8) + B);
-				img.setRGB(5, 8, (R << 16) + (G << 8) + B);	
-				//img.setRGB(6, 8, (R << 16) + (G << 8) + B);		// 8
+				//display.setPixelRGB(2, 8, (R << 16) + (G << 8) + B);		// Brightest Green
+				display.setPixelRGB(3, 8, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(4, 8, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 8, (R << 16) + (G << 8) + B);	
+				//display.setPixelRGB(6, 8, (R << 16) + (G << 8) + B);		// 8
 
-				img.setRGB(2, 9, (R << 16) + (G << 8) + B);		
-				img.setRGB(3, 9, (R << 16) + (G << 8) + B);	
-				img.setRGB(4, 9, (R << 16) + (G << 8) + B);
-				img.setRGB(5, 9, (R << 16) + (G << 8) + B);	
-				img.setRGB(6, 9, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(2, 9, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(3, 9, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(4, 9, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 9, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(6, 9, (R << 16) + (G << 8) + B);		
 
-				img.setRGB(2, 10, (R << 16) + (G << 8) + B);			
-				img.setRGB(6, 10, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(2, 10, (R << 16) + (G << 8) + B);			
+				display.setPixelRGB(6, 10, (R << 16) + (G << 8) + B);
 
-				img.setRGB(2, 11, (R << 16) + (G << 8) + B);		
-				img.setRGB(3, 11, (R << 16) + (G << 8) + B);	
-				img.setRGB(4, 11, (R << 16) + (G << 8) + B);
-				img.setRGB(5, 11, (R << 16) + (G << 8) + B);	
-				img.setRGB(6, 11, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(2, 11, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(3, 11, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(4, 11, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 11, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(6, 11, (R << 16) + (G << 8) + B);	
 
-				img.setRGB(2, 12, (R << 16) + (G << 8) + B);		
-				img.setRGB(3, 12, (R << 16) + (G << 8) + B);	
-				img.setRGB(4, 12, (R << 16) + (G << 8) + B);
-				img.setRGB(5, 12, (R << 16) + (G << 8) + B);	
-				img.setRGB(6, 12, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(2, 12, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(3, 12, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(4, 12, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 12, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(6, 12, (R << 16) + (G << 8) + B);
 
-				img.setRGB(2, 13, (R << 16) + (G << 8) + B);			
-				img.setRGB(6, 13, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(2, 13, (R << 16) + (G << 8) + B);			
+				display.setPixelRGB(6, 13, (R << 16) + (G << 8) + B);
 
-				img.setRGB(2, 14, (R << 16) + (G << 8) + B);		
-				img.setRGB(3, 14, (R << 16) + (G << 8) + B);	
-				img.setRGB(4, 14, (R << 16) + (G << 8) + B);
-				img.setRGB(5, 14, (R << 16) + (G << 8) + B);	
-				img.setRGB(6, 14, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(2, 14, (R << 16) + (G << 8) + B);		
+				display.setPixelRGB(3, 14, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(4, 14, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 14, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(6, 14, (R << 16) + (G << 8) + B);	
 		
-				img.setRGB(3, 15, (R << 16) + (G << 8) + B);	
-				img.setRGB(4, 15, (R << 16) + (G << 8) + B);
-				img.setRGB(5, 15, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(3, 15, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(4, 15, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 15, (R << 16) + (G << 8) + B);	
 
 				break;
 			case 9:
@@ -1752,26 +1734,26 @@ private void showWin()
 				G = 255;
 				B = 0;
 
-				img.setRGB(4, 15, (R << 16) + (G << 8) + B);		// Brightest Green
-				img.setRGB(5, 14, (R << 16) + (G << 8) + B);	
-				img.setRGB(5, 15, (R << 16) + (G << 8) + B);
-				img.setRGB(6, 14, (R << 16) + (G << 8) + B);	
-				img.setRGB(6, 13, (R << 16) + (G << 8) + B);		// 9
-				img.setRGB(6, 12, (R << 16) + (G << 8) + B); 
-				img.setRGB(6, 11, (R << 16) + (G << 8) + B);	
-				img.setRGB(6, 10, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(4, 15, (R << 16) + (G << 8) + B);		// Brightest Green
+				display.setPixelRGB(5, 14, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(5, 15, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(6, 14, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(6, 13, (R << 16) + (G << 8) + B);		// 9
+				display.setPixelRGB(6, 12, (R << 16) + (G << 8) + B); 
+				display.setPixelRGB(6, 11, (R << 16) + (G << 8) + B);	
+				display.setPixelRGB(6, 10, (R << 16) + (G << 8) + B);
 
-				img.setRGB(5, 9, (R << 16) + (G << 8) + B);
-				img.setRGB(4, 9, (R << 16) + (G << 8) + B);
-				img.setRGB(3, 9, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 9, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(4, 9, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(3, 9, (R << 16) + (G << 8) + B);
 
-				img.setRGB(2, 10, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(2, 10, (R << 16) + (G << 8) + B);
 
-				img.setRGB(2, 11, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(2, 11, (R << 16) + (G << 8) + B);
 
-				img.setRGB(5, 12, (R << 16) + (G << 8) + B);
-				img.setRGB(4, 12, (R << 16) + (G << 8) + B);
-				img.setRGB(3, 12, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(5, 12, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(4, 12, (R << 16) + (G << 8) + B);
+				display.setPixelRGB(3, 12, (R << 16) + (G << 8) + B);
 
 				break;
 
@@ -1788,72 +1770,71 @@ private void showWin()
 	{
 		// FROGGER TITLE SCREEN
 	int R, G, B;
-	BufferedImage img=display.getImage();
 		R = 0;
 		G = 255;
 		B = 0;
-		img.setRGB(0, 0, (R << 16) + (G << 8) + B);		// Brightest Green
-		img.setRGB(1, 0, (R << 16) + (G << 8) + B);
-		img.setRGB(2, 0, (R << 16) + (G << 8) + B);		// F
-		img.setRGB(3, 0, (R << 16) + (G << 8) + B); 
+		display.setPixelRGB(0, 0, (R << 16) + (G << 8) + B);		// Brightest Green
+		display.setPixelRGB(1, 0, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(2, 0, (R << 16) + (G << 8) + B);		// F
+		display.setPixelRGB(3, 0, (R << 16) + (G << 8) + B); 
 		
-		img.setRGB(0, 1, (R << 16) + (G << 8) + B);
-		img.setRGB(1, 2, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(0, 1, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(1, 2, (R << 16) + (G << 8) + B);
 
-		img.setRGB(0, 2, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(0, 2, (R << 16) + (G << 8) + B);
 
-		img.setRGB(0, 3, (R << 16) + (G << 8) + B);
-		img.setRGB(0, 4, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(0, 3, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(0, 4, (R << 16) + (G << 8) + B);
 
 		R = 164;
 		G = 255;
 		B = 0;
 
-		img.setRGB(1, 5, (R << 16) + (G << 8) + B);
-		img.setRGB(2, 5, (R << 16) + (G << 8) + B);		// R
-		img.setRGB(3, 5, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(1, 5, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(2, 5, (R << 16) + (G << 8) + B);		// R
+		display.setPixelRGB(3, 5, (R << 16) + (G << 8) + B);
 
-		img.setRGB(1, 6, (R << 16) + (G << 8) + B);
-		img.setRGB(3, 6, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(1, 6, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(3, 6, (R << 16) + (G << 8) + B);
 
-		img.setRGB(1, 7, (R << 16) + (G << 8) + B);
-		img.setRGB(2, 7, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(1, 7, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(2, 7, (R << 16) + (G << 8) + B);
 
-		img.setRGB(1, 8, (R << 16) + (G << 8) + B);
-		img.setRGB(3, 8, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(1, 8, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(3, 8, (R << 16) + (G << 8) + B);
 
 
 		R = 0;
 		G = 255;
 		B = 140;
 
-		img.setRGB(4, 9, (R << 16) + (G << 8) + B);		// O
-		img.setRGB(5, 9, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(4, 9, (R << 16) + (G << 8) + B);		// O
+		display.setPixelRGB(5, 9, (R << 16) + (G << 8) + B);
 
-		img.setRGB(3, 10, (R << 16) + (G << 8) + B);
-		img.setRGB(6, 10, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(3, 10, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(6, 10, (R << 16) + (G << 8) + B);
 
-		img.setRGB(3, 11, (R << 16) + (G << 8) + B);
-		img.setRGB(6, 11, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(3, 11, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(6, 11, (R << 16) + (G << 8) + B);
 
-		img.setRGB(4, 12, (R << 16) + (G << 8) + B);
-		img.setRGB(5, 12, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(4, 12, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(5, 12, (R << 16) + (G << 8) + B);
 
 
 		R = 128;
 		G = 240;
 		B = 126;
-		img.setRGB(6, 13, (R << 16) + (G << 8) + B);	// G
-		img.setRGB(7, 13, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(6, 13, (R << 16) + (G << 8) + B);	// G
+		display.setPixelRGB(7, 13, (R << 16) + (G << 8) + B);
 
-		img.setRGB(5, 14, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(5, 14, (R << 16) + (G << 8) + B);
 
-		img.setRGB(5, 15, (R << 16) + (G << 8) + B);
-		img.setRGB(8, 15, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(5, 15, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(8, 15, (R << 16) + (G << 8) + B);
 
-		img.setRGB(6, 16, (R << 16) + (G << 8) + B);
-		img.setRGB(7, 16, (R << 16) + (G << 8) + B);
-		img.setRGB(8, 16, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(6, 16, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(7, 16, (R << 16) + (G << 8) + B);
+		display.setPixelRGB(8, 16, (R << 16) + (G << 8) + B);
 
 
 	}
