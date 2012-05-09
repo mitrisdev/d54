@@ -38,7 +38,7 @@ The game opens up a socket on port 12345 to accept user commands.  The real cont
 
 To create your own plugin, you need to extend the `DisplayPlugin` class in `edu.mit.d54`.  The only method that needs to be implemented is `void loop()` which will be called every frame to draw the display.  To be compatible with the `PluginRunner` main class in the jar file, you must also define a constructor of the form `YourPlugin(Display2D display, double framerate)`.
 
-In your `loop` method, you should call `getDisplay()` to grab a reference to the `Display2D` object, and then `getGraphics()` to get a `java.awt.Graphics2D` to draw on or `getImage()` to manipulate the `BufferedImage` directly.
+In your `loop` method, you should call `getDisplay()` to grab a reference to the `Display2D` object, and then `getGraphics()` to get a `java.awt.Graphics2D` to draw on or the `setPixel` methods to modify the image data directly.
 
 To run a custom plugin:
 
