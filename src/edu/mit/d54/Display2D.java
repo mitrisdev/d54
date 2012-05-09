@@ -1,5 +1,6 @@
 package edu.mit.d54;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -71,6 +72,7 @@ public class Display2D {
 	}
 	
 	/**
+	 * @deprecated Use the setRGB and getRGB methods in this object instead.
 	 * @return The {@link BufferedImage} backing the frame being rendered.
 	 */
 	public BufferedImage getImage()
@@ -84,6 +86,56 @@ public class Display2D {
 	public int getWidth()
 	{
 		return width;
+	}
+	
+	/**
+	 * Get the RGB value for the specified pixel in the currently active frame.
+	 * @param x Pixel x coordinate
+	 * @param y Pixel y coordinate
+	 * @return The pixel RGB value as a packed int
+	 */
+	public int getPixelRGB(int x, int y)
+	{
+		return imageData.getRGB(x, y);
+	}
+	
+	/**
+	 * Set the RGB color for the pixel as individual components
+	 * @param x Pixel x coordinate
+	 * @param y Pixel y coordinate
+	 * @param r The red component of the color (0-255)
+	 * @param g The green component of the color (0-255)
+	 * @param b The blue component of the color (0-255)
+	 */
+	public void setPixelRGB(int x, int y, int r, int g, int b)
+	{
+		if (r>255 || g>255 || b>255 || r<0 || g<0 || b<0)
+			throw new IllegalArgumentException("Color values out of bounds");
+		imageData.setRGB(x, y, r<<16+g<<8+b);
+	}
+	
+	/**
+	 * Set the RGB color for the pixel as a packed integer
+	 * @param x Pixel x-coordinate
+	 * @param y Pixel y-coordinate
+	 * @param rgb The color of the pixel as a packed RGB int
+	 */
+	public void setPixelRGB(int x, int y, int rgb)
+	{
+		imageData.setRGB(x,y,rgb);
+	}
+	
+	/**
+	 * Sets the color of the pixel using a hue, saturation, brightness (HSB) representation
+	 * @param x Pixel x-coordinate
+	 * @param y Pixel y-coordinate
+	 * @param h The hue of the color
+	 * @param s The saturation of the color (0.0-1.0)
+	 * @param b The brightness of the color (0.0-1.0)
+	 */
+	public void setPixelHSB(int x, int y, float h, float s, float b)
+	{
+		imageData.setRGB(x, y, Color.HSBtoRGB(h, s, b));
 	}
 	
 	/**

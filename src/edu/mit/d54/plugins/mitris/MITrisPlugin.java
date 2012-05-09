@@ -300,7 +300,6 @@ public class MITrisPlugin extends DisplayPlugin {
 	{
 		int width=display.getWidth();
 		int height=display.getHeight();
-		BufferedImage img=display.getImage();
 		for (int x=0; x<width; x++)
 		{
 			for (int y=0; y<height; y++)
@@ -309,7 +308,7 @@ public class MITrisPlugin extends DisplayPlugin {
 				Color c=p==null?Color.BLACK:p.getColor(board.getLevel(),gameDisplayTime);
 				float[] hsb=Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), new float[3]);
 				hsb[2]*=brightness;
-				img.setRGB(x, height-1-y, Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]));
+				display.setPixelHSB(x, height-1-y, hsb[0], hsb[1], hsb[2]);
 			}
 		}
 	}

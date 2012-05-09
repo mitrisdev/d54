@@ -1,8 +1,5 @@
 package edu.mit.d54.plugins.test;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-
 import edu.mit.d54.Display2D;
 import edu.mit.d54.DisplayPlugin;
 
@@ -23,12 +20,11 @@ public class TestPlugin extends DisplayPlugin
 	protected void loop() {
 		Display2D display=getDisplay();
 		time+=dt;
-		BufferedImage img=display.getImage();
 		for (int x=0; x<display.getWidth(); x++)
 		{
 			for (int y=0; y<display.getHeight(); y++)
 			{
-				img.setRGB(x, y, Color.HSBtoRGB((float)(x+y+time*3)/36.f, 1f, 1f));
+				display.setPixelHSB(x,y,(float)(x+y+time*3)/36.f, 1f, 1f);
 			}
 		}
 	}
