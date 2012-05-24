@@ -44,6 +44,7 @@ public class DisplayPanel extends JPanel implements DisplayListener {
 	
 	public void paintComponent(Graphics g)
 	{
+		super.paintComponent(g);
 		g.setColor(Color.BLACK);
 		g.fillRect(0,0,this.getWidth(),this.getHeight());
 		BufferedImage img=display.getBufferedImage();
