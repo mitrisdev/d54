@@ -14,12 +14,29 @@ public class PluginRunner {
 	public static void main(String[] args) {
 		if (args.length<1)
 		{
-			System.out.println("Usage: java PluginRunner <plugin-class-name>");
+			System.out.println("Usage: java PluginRunner [--framerate=<framerate] <plugin-class-name>");
 			System.exit(1);
 		}
-		String clsname=args[0];
+		String clsname=null;
 		Display2D display=new GBDisplay();
 		double framerate=15.0;
+		for (String arg : args)
+		{
+			if (arg.startsWith("--framerate="))
+			{
+				framerate=Float.parseFloat(arg.substring(12));
+			}
+			else if (clsname==null)
+			{
+				clsname=arg;
+			}
+			else
+			{
+				System.out.println("Unknown or extra argument: "+arg);
+				System.exit(10);
+			}
+		}
+
 		DisplayPlugin plugin=null;
 		try
 		{

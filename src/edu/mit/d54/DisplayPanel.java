@@ -12,7 +12,7 @@ import javax.swing.JPanel;
  */
 public class DisplayPanel extends JPanel implements DisplayListener {
 	private static final long serialVersionUID = 3798905037016922251L;
-	private final Display2D display;
+	protected final Display2D display;
 	private final int pixelX,pixelY,borderX,borderY;
 
 	/**

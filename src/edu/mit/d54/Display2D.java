@@ -73,7 +73,7 @@ public class Display2D {
 	
 	/**
 	 * This method has been deprecated and will be removed in the future.  Please use the getPixel and setPixel methods instead.
-	 * @deprecated Use the setRGB and getRGB methods in this class instead.
+	 * @deprecated Use the setPixel and getPixel methods in this class instead.
 	 * @return The {@link BufferedImage} backing the frame being rendered.
 	 */
 	public BufferedImage getImage()
@@ -87,6 +87,14 @@ public class Display2D {
 	public int getWidth()
 	{
 		return width;
+	}
+	
+	/**
+	 * @return The height of the display in pixels.
+	 */
+	public int getHeight()
+	{
+		return height;
 	}
 	
 	/**
@@ -137,14 +145,6 @@ public class Display2D {
 	public void setPixelHSB(int x, int y, float h, float s, float b)
 	{
 		imageData.setRGB(x, y, Color.HSBtoRGB(h, s, b));
-	}
-	
-	/**
-	 * @return The height of the display in pixels.
-	 */
-	public int getHeight()
-	{
-		return height;
 	}
 	
 	/**
