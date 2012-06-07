@@ -31,7 +31,7 @@ target="1.5"
             <fileset dir="${build.dir}/classes" includes="**/*.class"/>
         </copy>
 		<copy todir="${build.dir}/jar/images">
-        	<fileset dir="images" includes="*.png"/>
+        	<fileset dir="images" includes="**/*.png"/>
 		</copy>
         <jar destfile="${build.dir}/${jar.name}" basedir="${build.dir}/jar">
             <manifest>
@@ -49,8 +49,9 @@ target="1.5"
                 <include name="ant.properties"/>
                 <include name="build.xml"/>
                 <include name="doc/**/*"/>
-                <include name="lib/**/*"/>
-                <include name="src/**/*"/>
+                <include name="lib/**/*.jar"/>
+                <include name="src/**/*.java"/>
+		<include name="images/**/*.png"/>
             </fileset>
         </copy>
         <zip destfile="${build.dir}/${dist.package.name}.zip"

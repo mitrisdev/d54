@@ -6,7 +6,7 @@ The MIT Green Building Display plugin interface
 
 On April 20, 2012, MIT hackers installed a game similar to Tetris using the windows of the MIT Green Building (Building 54) as pixels.  The game (named MITris) was controlled from a wooden box placed outside of the building and could be played by members of the MIT community and the public.  The Green Building display was originally installed in a separate hack, displaying an American flag on the building to commemorate the tenth anniversary of the September 11, 2001 attacks.
 
-We've decided to release some of the software used to run the hack.  Our goal in doing this is to inspire the world at large to create interesting games or visualizations or just about anything.  If we see something cool enough, we'll try to find a chance to run your code.
+We've decided to release some of the software used to run the hack.  Our goal in doing this is to inspire the world at large to create interesting games, visualizations, or just about anything.  If we see something cool enough, we'll try to find a chance to run your code.
 
 ## Technical Information ##
 
@@ -14,7 +14,7 @@ The display consists of 153 pixels arranged in a 9 wide by 17 tall configuration
 
 The game controller consisted of a wooden box with 4 lighted switches placed near the Great Sail, about 70 meters from the front of the Green Building.  The output from the switches was sent over the wireless network to a computer which ran the game and generated the output for the display.
 
-The software released here is extremely similar to what was running for the hack.  All code that actually communicates with the display has been removed.  The released code includes the display plugin API which allows one to write and preview a plugin which would be compatible with the actual display.  The MITris game plugin as well as a simple test plugin are also included.
+The software released here is extremely similar to what was running for the hack.  The code that actually communicates with the display has been removed.  The released code includes the display plugin API which allows one to write and preview a plugin which would be compatible with the actual display.  The MITris game plugin as well as a simple test plugin are also included.
 
 # Installation and Usage #
 
@@ -26,11 +26,11 @@ The included ant build script will create a jar file which can be used directly.
 
 To run the test plugin:
 
-	java -jar d54-0.0.1.jar edu.mit.d54.plugins.test.TestPlugin
+	java -jar d54-0.0.2.jar edu.mit.d54.plugins.test.TestPlugin
 
 To run the MITris plugin:
 
-	java -jar d54-0.0.1.jar edu.mit.d54.plugins.mitris.MITrisPlugin
+	java -jar d54-0.0.2.jar edu.mit.d54.plugins.mitris.MITrisPlugin
 
 The game opens up a socket on port 12345 to accept user commands.  The real controller would connect to this socket and send the button presses to the game as the characters `U`, `D`, `R`, and `L`.  This plugin certainly wasn't designed to take local input from the keyboard, but if you want to play locally, you can `telnet localhost 12345` in a separate terminal and type those letters.  You may have to hit `Return` to actually send the characters, depending on your `telnet` client.
 
@@ -42,7 +42,7 @@ In your `loop` method, you should call `getDisplay()` to grab a reference to the
 
 To run a custom plugin:
 
-	java -jar d54-0.0.1.jar -cp <your .class file directory> your.pkg.YourPlugin
+	java -jar d54-0.0.2.jar -cp <your .class file directory> your.pkg.YourPlugin
 
 ## Other hints ##
 
