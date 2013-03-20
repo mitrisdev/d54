@@ -26,13 +26,27 @@ The included ant build script will create a jar file which can be used directly.
 
 To run the test plugin:
 
-	java -jar d54-0.0.2.jar edu.mit.d54.plugins.test.TestPlugin
+	java -jar d54-0.1.0.jar edu.mit.d54.plugins.test.TestPlugin
 
 To run the MITris plugin:
 
-	java -jar d54-0.0.2.jar edu.mit.d54.plugins.mitris.MITrisPlugin
+	java -jar d54-0.1.0.jar edu.mit.d54.plugins.mitris.MITrisPlugin
 
 The game opens up a socket on port 12345 to accept user commands.  The real controller would connect to this socket and send the button presses to the game as the characters `U`, `D`, `R`, and `L`.  This plugin certainly wasn't designed to take local input from the keyboard, but if you want to play locally, you can `telnet localhost 12345` in a separate terminal and type those letters.  You may have to hit `Return` to actually send the characters, depending on your `telnet` client.
+
+The jar file can be built from the Ant `build.xml` using the `build.jar` target.  If you want to run the code without building the jar, keep in mind that the main method is actually in `PluginRunner` (the plugin class name is an argument), so you need to run:
+
+	java edu.mit.d54.PluginRunner <plugin-class-name>
+
+Included plugins which you can run:
+
+      - edu.mit.d54.plugins.flag.FlagPlugin (waving flag)
+      - edu.mit.d54.plugins.audio.SpectrographPlugin (audio visualization)
+      - edu.mit.d54.plugins.audio.VUMeterPlugin (audio visualization)
+      - edu.mit.d54.plugins.mitris.MITrisPlugin
+      - edu.mit.d54.plugins.erl30.Erl30Plugin (contributed by a MIT EAPS staff member)
+      - edu.mit.d54.plugins.kx.FrogPlugin (contributed by kxnz)
+      - edu.mit.d54.plugins.kx.PongPlugin (contributed by kxnz)
 
 ## Writing plugins ##
 
@@ -42,13 +56,15 @@ In your `loop` method, you should call `getDisplay()` to grab a reference to the
 
 To run a custom plugin:
 
-	java -jar d54-0.0.2.jar -cp <your .class file directory> your.pkg.YourPlugin
+	java -jar d54-0.1.0.jar -cp <your .class file directory> your.pkg.YourPlugin
 
 ## Other hints ##
 
 By default, the `PluginRunner` creates a `GBDisplay`, which is a `Display2D` with the dimensions of the Green Building.  You can create your own display with a different number of pixels as well as a different pixel aspect ratio by changing the arguments to the Display2D constructor.  This might require modifying `PluginRunner` (there is also a bare-bones launcher written in `edu.mit.d54.plugins.test.TestRunner`).
 
-If you wanted to display the output of your plugin on something other than the preview window, you can implement a new `DisplayListener` to do that.  The `DisplayListener` is notified every time the display is updated and reads the updated image from the `getBufferedImage()` method in `Display2D`.
+If you wanted to display the output of your plugin on something other than the preview window, you can implement a new `DisplayListener` to do that.  The `DisplayListener` is notified every time the display is updated and reads the updated image from the `getBufferedImage()` method in `Display2D`.  We use another `DisplayListener` to encode the image to be wirelessly broadcast to the real display on the Green Building.
+
+We recently added some code for audio visualizations.  There are two examples: `VUMeterPlugin` and `SpectrographPlugin`.  These use the `AudioProcessor` class to retrieve audio data from your line in or microphone.
 
 ## Erratum ##
 
