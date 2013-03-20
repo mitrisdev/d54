@@ -23,7 +23,8 @@ The software released here is extremely similar to what was running for the hack
 The included ant build script will create a jar file which can be used directly.  Alternatively, a pre-built jar file with the initial release can be downloaded.  An installation of Java 1.6 or higher is required to run the software.
 
 Dependencies:
-	- [JTransforms](http://sourceforge.net/projects/jtransforms) FFT library.  This is needed for the audio processing code.  Download the current version (we are using 2.4) as a jar file and place in the lib directory.
+
+- [JTransforms](http://sourceforge.net/projects/jtransforms) FFT library.  This is needed for the audio processing code.  Download the current version (we are using 2.4) as a jar file and place in the lib directory.
 
 ## Usage ##
 
@@ -43,13 +44,13 @@ The jar file can be built from the Ant `build.xml` using the `build.jar` target.
 
 Included plugins which you can run:
 
-      - edu.mit.d54.plugins.flag.FlagPlugin (waving flag)
-      - edu.mit.d54.plugins.audio.SpectrographPlugin (audio visualization)
-      - edu.mit.d54.plugins.audio.VUMeterPlugin (audio visualization)
-      - edu.mit.d54.plugins.mitris.MITrisPlugin
-      - edu.mit.d54.plugins.erl30.Erl30Plugin (contributed by a MIT EAPS staff member)
-      - edu.mit.d54.plugins.kx.FrogPlugin (contributed by kxnz)
-      - edu.mit.d54.plugins.kx.PongPlugin (contributed by kxnz)
+- edu.mit.d54.plugins.flag.FlagPlugin (waving flag)
+- edu.mit.d54.plugins.audio.SpectrographPlugin (audio visualization)
+- edu.mit.d54.plugins.audio.VUMeterPlugin (audio visualization)
+- edu.mit.d54.plugins.mitris.MITrisPlugin
+- edu.mit.d54.plugins.erl30.Erl30Plugin (contributed by a MIT EAPS staff member)
+- edu.mit.d54.plugins.kx.FrogPlugin (contributed by kxnz)
+- edu.mit.d54.plugins.kx.PongPlugin (contributed by kxnz)
 
 ## Writing plugins ##
 
