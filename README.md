@@ -22,6 +22,9 @@ The software released here is extremely similar to what was running for the hack
 
 The included ant build script will create a jar file which can be used directly.  Alternatively, a pre-built jar file with the initial release can be downloaded.  An installation of Java 1.6 or higher is required to run the software.
 
+Dependencies:
+	- [JTransforms](http://sourceforge.net/projects/jtransforms) FFT library.  This is needed for the audio processing code.  Download the current version (we are using 2.4) as a jar file and place in the lib directory.
+
 ## Usage ##
 
 To run the test plugin:
@@ -64,7 +67,7 @@ By default, the `PluginRunner` creates a `GBDisplay`, which is a `Display2D` wit
 
 If you wanted to display the output of your plugin on something other than the preview window, you can implement a new `DisplayListener` to do that.  The `DisplayListener` is notified every time the display is updated and reads the updated image from the `getBufferedImage()` method in `Display2D`.  We use another `DisplayListener` to encode the image to be wirelessly broadcast to the real display on the Green Building.
 
-We recently added some code for audio visualizations.  There are two examples: `VUMeterPlugin` and `SpectrographPlugin`.  These use the `AudioProcessor` class to retrieve audio data from your line in or microphone.
+We recently added some code for audio visualizations.  There are two examples: `VUMeterPlugin` and `SpectrographPlugin`.  These use the `AudioProcessor` class to retrieve audio data from your line in or microphone.  
 
 ## Erratum ##
 
