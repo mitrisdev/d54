@@ -14,7 +14,7 @@ public class PluginRunner {
 	public static void main(String[] args) {
 		if (args.length<1)
 		{
-			System.out.println("Usage: java PluginRunner [--framerate=<framerate] <plugin-class-name>");
+			System.out.println("Usage: java PluginRunner [--framerate=<framerate>] <plugin-class-name>");
 			System.exit(1);
 		}
 		String clsname=null;

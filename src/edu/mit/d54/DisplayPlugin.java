@@ -1,15 +1,23 @@
 package edu.mit.d54;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * This class is the superclass of all display plugins that can run on D54.  A display plugin will create a render thread
- * and will render its output on a Display2D at a certain framerate.
+ * and will render its output on a Display2D at a certain framerate.  DisplayPlugins can have "knobs" which are
+ * parameters intended to be adjusted dynamically while the plugin is running.
  */
 public abstract class DisplayPlugin implements Runnable {
 	private final Display2D display;
 	private final double framerate;
 	private boolean stop=false;
+	private boolean running=false;
 	private final long startTimeMillis;
 	private long curTimeMillis;
+	private final Map<String,String> knobValues;
+	private final Map<String,String> knobDesc;
 	
 	/**
 	 * Create a new DisplayPlugin associated with a specific Display2D
@@ -23,25 +31,28 @@ public abstract class DisplayPlugin implements Runnable {
 		this.display=display;
 		this.framerate=framerate;
 		startTimeMillis=System.currentTimeMillis();
+		knobValues=new HashMap<String,String>();
+		knobDesc=new HashMap<String,String>();
 	}
 	
 	/**
 	 * Tell the plugin to stop rendering at the end of the next frame.
 	 */
-	public void terminate()
+	public void stop()
 	{
 		stop=true;
 	}
 	
-	public boolean isTerminated()
+	public boolean isRunning()
 	{
-		return stop;
+		return running;
 	}
 	
 	public void run()
 	{
 		onStart();
 		curTimeMillis=System.currentTimeMillis();
+		running=true;
 		while (!stop)
 		{
 			loop();
@@ -53,7 +64,14 @@ public abstract class DisplayPlugin implements Runnable {
 			curTimeMillis=System.currentTimeMillis();
 			display.endFrame();
 		}
+		try {
+			long delay=(long)(1000./framerate)-(System.currentTimeMillis()-curTimeMillis);
+			if (delay>0)
+				Thread.sleep(delay);
+		} catch (InterruptedException e) {}
+		display.endFrame();
 		onStop();
+		running=false;
 	}
 	
 	/**
@@ -61,8 +79,10 @@ public abstract class DisplayPlugin implements Runnable {
 	 */
 	public void start()
 	{
-		if (stop)
-			throw new RuntimeException("DisplayPlugin already terminated");
+		if (running)
+			throw new RuntimeException("Plugin already running!");
+		running=true;
+		stop=false;
 		new Thread(this).start();
 	}
 	
@@ -103,8 +123,82 @@ public abstract class DisplayPlugin implements Runnable {
 	{	
 	}
 	
+	/**
+	 * Get the Display2D associated with this DisplayPlugin
+	 * @return the plugin's Display2D
+	 */
 	public Display2D getDisplay()
 	{
 		return display;
 	}
+	
+	/**
+	 * Create a new adjustable knob for this plugin.
+	 * @param knob The name of the knob
+	 * @param initValue The inital value of the knob
+	 * @param description A user-friendly description of the knob
+	 */
+	protected void registerKnob(String knob, String initValue, String description)
+	{
+		knobDesc.put(knob, description);
+		knobValues.put(knob, initValue);
+		setKnob(knob,initValue);
+	}
+	
+	/**
+	 * Get the current value of a knob
+	 * @param knob The name of the knob
+	 * @return the current value of the knob
+	 */
+	public String getKnobValue(String knob)
+	{
+		if (!knobValues.containsKey(knob))
+			throw new IllegalArgumentException("Knob "+knob+" not available");
+		return knobValues.get(knob);
+	}
+	
+	/**
+	 * Get the description of a knob
+	 * @param knob The name of the knob
+	 * @return the knob's description
+	 */
+	public String getKnobDescription(String knob)
+	{
+		if (!knobValues.containsKey(knob))
+			throw new IllegalArgumentException("Knob "+knob+" not available");
+		return knobDesc.get(knob);
+	}
+	
+	/**
+	 * Adjust the value of a knob
+	 * @param knob The name of the knob
+	 * @param value The new setting of the knob
+	 */
+	public void setKnob(String knob, String value)
+	{
+		if (!knobValues.containsKey(knob))
+			throw new IllegalArgumentException("Knob "+knob+" not available");
+		knobValues.put(knob, value);
+		knobChanged(knob,value);
+	}
+	
+	/**
+	 * Placeholder to notify a plugin when a knob is changed.  A plugin can choose to either override this method
+	 * or call getKnobValue every frame to determine the current value of a knob.
+	 * @param knob The name of the knob which was modified
+	 * @param value The new setting of the knob
+	 */
+	protected void knobChanged(String knob, String value)
+	{
+	}
+	
+	/**
+	 * Get all of the knobs for this plugin.
+	 * @return a set containing the names of all of the knobs
+	 */
+	public Set<String> getKnobs()
+	{
+		return knobDesc.keySet();
+	}
+	
 }

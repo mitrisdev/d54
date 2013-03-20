@@ -13,12 +13,9 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
 
 import edu.mit.d54.Display2D;
-import edu.mit.d54.DisplayPanel;
 import edu.mit.d54.DisplayPlugin;
-import edu.mit.d54.GBDisplay;
 
 /**
  * This is a plugin implementing the MITris game.  User input is received over the TCP socket on port 12345.
@@ -66,7 +63,7 @@ public class MITrisPlugin extends DisplayPlugin {
 	{
 		try
 		{
-			InputStream stream=MITrisPlugin.class.getResourceAsStream("/images/mitris_logo.png");
+			InputStream stream=MITrisPlugin.class.getResourceAsStream("/images/mitris/mitris_logo.png");
 			mitrisLogo=ImageIO.read(stream);
 		}
 		catch (IOException e)
@@ -311,20 +308,5 @@ public class MITrisPlugin extends DisplayPlugin {
 				display.setPixelHSB(x, height-1-y, hsb[0], hsb[1], hsb[2]);
 			}
 		}
-	}
-	
-	public static void main(String[] args) throws Exception
-	{
-		Display2D display=new GBDisplay();
-		
-		JFrame frame=new JFrame("MITris!");
-		DisplayPanel dPanel=new DisplayPanel(display);
-		frame.add(dPanel);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
-		frame.pack();
-		frame.setVisible(true);
-		
-		MITrisPlugin plugin=new MITrisPlugin(display, 15);
-		plugin.start();
 	}
 }
