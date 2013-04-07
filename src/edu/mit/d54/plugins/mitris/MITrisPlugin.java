@@ -8,29 +8,24 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
 
 import javax.imageio.ImageIO;
 
+import edu.mit.d54.ArcadeController;
+import edu.mit.d54.ArcadeListener;
 import edu.mit.d54.Display2D;
 import edu.mit.d54.DisplayPlugin;
 
 /**
  * This is a plugin implementing the MITris game.  User input is received over the TCP socket on port 12345.
  */
-public class MITrisPlugin extends DisplayPlugin {
+public class MITrisPlugin extends DisplayPlugin implements ArcadeListener {
 	
 	private enum State { IDLE, GAME, GAME_END_1, GAME_END_2, GAME_START, IDLE_ANIM, GAME_END_ALT_2 };
 	
 	private static final double ANIM_TIME_STEP=0.3;
 	private static final double GAME_END_WAIT=2.0;
 	private static final double LOGO_ANIM_STEP=0.1;
-	
-	private ServerSocket servSock;
-	private Socket sock;
-	private InputStream in;
 	
 	private final double timestep;
 	private final int width;
@@ -41,6 +36,8 @@ public class MITrisPlugin extends DisplayPlugin {
 	private double animTime;
 	private double animTimeLastStep;
 	private int logoPos;
+	
+	private ArcadeController controller;
 	
 	private MITrisGame mitrisGame;
 	private MITrisBoard gameOverBoard;
@@ -77,18 +74,64 @@ public class MITrisPlugin extends DisplayPlugin {
 		timestep=1/framerate;
 		width=display.getWidth();
 		height=display.getHeight();
-		servSock=new ServerSocket(12345);
-		servSock.setSoTimeout(20);
+
+		controller = ArcadeController.getInstance();
 
 		System.out.println("Game paused until client connect");
 		
 		gameState=State.IDLE;
 	}
+	
+	@Override
+	protected void onStart()
+	{
+		controller.setListener(this);
+	}
+	
+	public void arcadeButton(byte b)
+	{
+		switch (gameState)
+		{
+		case IDLE:
+			break;
+		case IDLE_ANIM:
+			switch (b)
+			{
+			case 'L':
+			case 'R':
+			case 'U':
+			case 'D':
+				gameState=State.GAME_START;
+			}
+			break;
+		case GAME_START:
+			break;
+		case GAME:
+			//check validity of user move
+			switch (b)
+			{
+			case 'L':
+				mitrisGame.moveLeft();
+				break;
+			case 'R':
+				mitrisGame.moveRight();
+				break;
+			case 'U':
+				mitrisGame.rotatePiece();
+				break;
+			case 'D':
+				mitrisGame.dropPiece();
+				break;
+			}
+			break;
+		default:
+			break;
+		}
+	}
 
 	@Override
 	protected void loop() {
 		Display2D display=getDisplay();
-		byte userInput=getUserInput();
 		Graphics2D g=display.getGraphics();
 		
 		switch (gameState)
@@ -109,39 +152,14 @@ public class MITrisPlugin extends DisplayPlugin {
 					gameState=State.IDLE;
 			}
 			g.drawImage(mitrisLogo, 10-logoPos, 6, null);
-			
-			switch (userInput)
-			{
-			case 'L':
-			case 'R':
-			case 'U':
-			case 'D':
-				gameState=State.GAME_START;
-			}
 			break;
 		case GAME_START:
 			mitrisGame=new MITrisGame(width,height,timestep);
 			gameState=State.GAME;
 			break;
 		case GAME:
-			//check validity of user move
-			switch (userInput)
-			{
-			case 'L':
-				mitrisGame.moveLeft();
-				break;
-			case 'R':
-				mitrisGame.moveRight();
-				break;
-			case 'U':
-				mitrisGame.rotatePiece();
-				break;
-			case 'D':
-				mitrisGame.dropPiece();
-				break;
-			case -1: //there was an error in the network socket or no client connected -- "pause" the game
+			if (!controller.isConnected())
 				return;
-			}
 			//move piece down if it's time
 			mitrisGame.clockTick();
 			gameDisplayTime=mitrisGame.getTime();
@@ -222,72 +240,6 @@ public class MITrisPlugin extends DisplayPlugin {
 		}
 	}
 	
-	private byte getUserInput()
-	{
-		byte userInput=0;
-		while (sock==null)
-		{
-			try
-			{
-				sock=servSock.accept();
-				sock.setSoTimeout(5);
-				in=sock.getInputStream();
-				System.out.println("Client connected");
-			}
-			catch (SocketTimeoutException e)
-			{
-				return -1;
-			}
-			catch (IOException e) 
-			{
-				e.printStackTrace();
-				sockCleanup();
-				return -1;
-			}
-		}
-		try
-		{
-			userInput=(byte)in.read();
-			if (userInput==-1)
-			{
-				sockCleanup();
-				System.out.println("Client disconnect");
-				return -1;
-			}
-			System.out.println("User input "+userInput);
-			return userInput;
-		}
-		catch (SocketTimeoutException e)
-		{
-			return 0;
-		}
-		catch (IOException e)
-		{
-			System.out.println("Client error");
-			e.printStackTrace();
-			sockCleanup();
-			return -1;
-		}
-	}
-	
-	private void sockCleanup()
-	{
-		try
-		{
-			sock.close();
-			in.close();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		finally
-		{
-			sock=null;
-			in=null;
-		}
-	}
-
 	private void sendBoardToDisplay(MITrisBoard board, Display2D display)
 	{
 		sendBoardToDisplay(board,display,1.0f);

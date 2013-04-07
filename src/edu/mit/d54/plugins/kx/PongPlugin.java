@@ -5,7 +5,11 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.LinkedList;
+import java.util.List;
 
+import edu.mit.d54.ArcadeController;
+import edu.mit.d54.ArcadeListener;
 import edu.mit.d54.Display2D;
 import edu.mit.d54.DisplayPlugin;
 
@@ -13,15 +17,12 @@ import edu.mit.d54.DisplayPlugin;
  * This is a plugin implementing a Pong game. Written by KX, based on source code from MITris
  *  User input is received over the TCP socket on port 12345.
  */
-public class PongPlugin extends DisplayPlugin {
+public class PongPlugin extends DisplayPlugin implements ArcadeListener {
 	
 	private enum State { IDLE, GAME, GAME_END_1, GAME_END_2, PLAY_START, IDLE_ANIM };
 	
-	private ServerSocket servSock;
-	private Socket sock;
-	private InputStream in;
-	
 	private final Display2D display;
+	private ArcadeController controller;
 	
 	private final double timestep;
 	private final int width;
@@ -59,19 +60,34 @@ public class PongPlugin extends DisplayPlugin {
 		timestep=1/framerate;
 		width=display.getWidth();
 		height=display.getHeight();
-		servSock=new ServerSocket(12345);
-		servSock.setSoTimeout(20);
 
+		controller = ArcadeController.getInstance();
 		System.out.println("Game paused until client connects");
 		
 		gameState=State.IDLE;
+	}
+	
+	@Override
+	protected void onStart()
+	{
+		controller.setListener(this);
+		userInputList = new LinkedList<Byte>();
+	}
+	
+	private List<Byte> userInputList;
+	public void arcadeButton(byte b)
+	{
+		userInputList.add(b);
 	}
 
 	@Override
 	protected void loop() {
 		Display2D display=getDisplay();
-		byte userInput=getUserInput();
 		
+		byte userInput = 0;
+		if (!userInputList.isEmpty())
+			userInput = userInputList.remove(0);
+
 		switch (gameState)
 		{
 		case IDLE:
@@ -177,10 +193,10 @@ public class PongPlugin extends DisplayPlugin {
 	public void moveBall()   // check whether it's time to move ball, and if so, do it
 	{			 // also detect collisions and bounce
 
-	if (animTime - ballLastStep > ballStepTime){  // time to step ball
+		if (animTime - ballLastStep > ballStepTime){  // time to step ball
 
 
-		switch (ballDirection) // move ball coordinates 
+			switch (ballDirection) // move ball coordinates 
 			{
 
 			case 0:		// downleft
@@ -188,162 +204,162 @@ public class PongPlugin extends DisplayPlugin {
 				ballPosX = ballPosX - 1;
 				ballPosY = ballPosY + 1;
 
-			break;
+				break;
 			case 1:		// upleft
 
 				ballPosX = ballPosX - 1;
 				ballPosY = ballPosY - 1;
 
-			break;
+				break;
 			case 2:		// upright
 
 				ballPosX = ballPosX + 1;
 				ballPosY = ballPosY - 1;
 
-			break;
+				break;
 			case 3:		//downright
 
 				ballPosX = ballPosX + 1;
 				ballPosY = ballPosY + 1;
 
-			break;		
+				break;		
 			}
-	
-		if (ballPosX == 8 && ballDirection == 2){  // change direction if hitting a wall 
-			ballDirection = 1;
-		}
 
-		if (ballPosX == 8 && ballDirection == 3){
-			ballDirection = 0;
-		}
-
-		if (ballPosX == 0 && ballDirection == 0){
-			ballDirection = 3;
-		}
-
-		if (ballPosX == 0 && ballDirection == 1){
-			ballDirection = 2;
-		}
-
-
-		
-		if (ballPosY == 15 && ballDirection == 0){   // detect collision with bottom paddle
-
-			if (p2Pos == ballPosX - 1){
+			if (ballPosX == 8 && ballDirection == 2){  // change direction if hitting a wall 
 				ballDirection = 1;
-				ballStepTime = ballStepTime - accelerationSpeed;
 			}
 
-			if (p2Pos + 1 == ballPosX - 1){
-				ballDirection = 2;
-				ballStepTime = ballStepTime - accelerationSpeed;
-			}
-
-		}
-
-		if (ballPosY == 15 && ballDirection == 3){
-
-			if (p2Pos == ballPosX + 1){
-				ballDirection = 1;
-				ballStepTime = ballStepTime - accelerationSpeed;
-			}
-
-			if (p2Pos + 1 == ballPosX + 1){
-				ballDirection = 2;
-				ballStepTime = ballStepTime - accelerationSpeed;
-			}
-
-		}
-
-		if (ballPosY == 1 && ballDirection == 1){   // detect collision with top paddle
-
-			if (p1Pos == ballPosX - 1){
+			if (ballPosX == 8 && ballDirection == 3){
 				ballDirection = 0;
-				ballStepTime = ballStepTime - accelerationSpeed;
-				
 			}
 
-			if (p1Pos + 1 == ballPosX - 1){
+			if (ballPosX == 0 && ballDirection == 0){
 				ballDirection = 3;
-				ballStepTime = ballStepTime - accelerationSpeed;
 			}
 
-		}
-
-		if (ballPosY == 1 && ballDirection == 2){
-
-			if (p1Pos == ballPosX + 1){
-				ballDirection = 0;
-				ballStepTime = ballStepTime - accelerationSpeed;
+			if (ballPosX == 0 && ballDirection == 1){
+				ballDirection = 2;
 			}
 
-			if (p1Pos + 1 == ballPosX + 1){
-				ballDirection = 3;
-				ballStepTime = ballStepTime - accelerationSpeed;
+
+
+			if (ballPosY == 15 && ballDirection == 0){   // detect collision with bottom paddle
+
+				if (p2Pos == ballPosX - 1){
+					ballDirection = 1;
+					ballStepTime = ballStepTime - accelerationSpeed;
+				}
+
+				if (p2Pos + 1 == ballPosX - 1){
+					ballDirection = 2;
+					ballStepTime = ballStepTime - accelerationSpeed;
+				}
+
 			}
 
-		}
+			if (ballPosY == 15 && ballDirection == 3){
 
-		if (ballPosY == 16 && ballPosX == p2Pos){    //  last moment catches
-			ballPosY = ballPosY - 1;
-			if (ballDirection == 0){ballDirection = 1;}
-			if (ballDirection == 3){ballDirection = 2;}
-		}
+				if (p2Pos == ballPosX + 1){
+					ballDirection = 1;
+					ballStepTime = ballStepTime - accelerationSpeed;
+				}
 
+				if (p2Pos + 1 == ballPosX + 1){
+					ballDirection = 2;
+					ballStepTime = ballStepTime - accelerationSpeed;
+				}
 
-		if (ballPosY == 16 && ballPosX == p2Pos+1){
-			ballPosY = ballPosY - 1;
-			if (ballDirection == 0){ballDirection = 1;}
-			if (ballDirection == 3){ballDirection = 2;}
-		}
-
-		if (ballPosY == 0 && ballPosX == p1Pos){
-			ballPosY = ballPosY + 1;
-			if (ballDirection == 1){ballDirection = 0;}
-			if (ballDirection == 2){ballDirection = 3;}
-		}
-
-		if (ballPosY == 0 && ballPosX == p1Pos+1){
-			ballPosY = ballPosY + 1;
-			if (ballDirection == 1){ballDirection = 0;}
-			if (ballDirection == 2){ballDirection = 3;}
-		}
-
-
-
-		if (ballPosY == 16){		// Detect missing the ball
-		ballStepTime = originalSpeed;
-		p1Score = p1Score + 1;
-
-			if (p1Score == winScore){
-				gameState=State.GAME_END_2;
-				winner = 1;
-			}else{
-			gameState=State.PLAY_START;	
 			}
-		animTime=0;
-		}
 
-		if (ballPosY == 0){
-		ballStepTime = originalSpeed;
-		p2Score = p2Score + 1;
+			if (ballPosY == 1 && ballDirection == 1){   // detect collision with top paddle
 
-			if (p2Score == winScore){
-				gameState=State.GAME_END_2;
-				winner = 2;
-			}else{		
-			gameState=State.PLAY_START;
+				if (p1Pos == ballPosX - 1){
+					ballDirection = 0;
+					ballStepTime = ballStepTime - accelerationSpeed;
+
+				}
+
+				if (p1Pos + 1 == ballPosX - 1){
+					ballDirection = 3;
+					ballStepTime = ballStepTime - accelerationSpeed;
+				}
+
 			}
-		animTime=0;
-		if (ballPosX<0){ballPosX=0;}	// catch-alls for crash prevention
-		if (ballPosX>8){ballPosX=8;}
-		if (ballPosY<0){ballPosY=0;}
-		if (ballPosY>16){ballPosY=16;}
-		}
 
-	ballLastStep = animTime;
+			if (ballPosY == 1 && ballDirection == 2){
+
+				if (p1Pos == ballPosX + 1){
+					ballDirection = 0;
+					ballStepTime = ballStepTime - accelerationSpeed;
+				}
+
+				if (p1Pos + 1 == ballPosX + 1){
+					ballDirection = 3;
+					ballStepTime = ballStepTime - accelerationSpeed;
+				}
+
+			}
+
+			if (ballPosY == 16 && ballPosX == p2Pos){    //  last moment catches
+				ballPosY = ballPosY - 1;
+				if (ballDirection == 0){ballDirection = 1;}
+				if (ballDirection == 3){ballDirection = 2;}
+			}
+
+
+			if (ballPosY == 16 && ballPosX == p2Pos+1){
+				ballPosY = ballPosY - 1;
+				if (ballDirection == 0){ballDirection = 1;}
+				if (ballDirection == 3){ballDirection = 2;}
+			}
+
+			if (ballPosY == 0 && ballPosX == p1Pos){
+				ballPosY = ballPosY + 1;
+				if (ballDirection == 1){ballDirection = 0;}
+				if (ballDirection == 2){ballDirection = 3;}
+			}
+
+			if (ballPosY == 0 && ballPosX == p1Pos+1){
+				ballPosY = ballPosY + 1;
+				if (ballDirection == 1){ballDirection = 0;}
+				if (ballDirection == 2){ballDirection = 3;}
+			}
+
+
+
+			if (ballPosY == 16){		// Detect missing the ball
+				ballStepTime = originalSpeed;
+				p1Score = p1Score + 1;
+
+				if (p1Score == winScore){
+					gameState=State.GAME_END_2;
+					winner = 1;
+				}else{
+					gameState=State.PLAY_START;	
+				}
+				animTime=0;
+			}
+
+			if (ballPosY == 0){
+				ballStepTime = originalSpeed;
+				p2Score = p2Score + 1;
+
+				if (p2Score == winScore){
+					gameState=State.GAME_END_2;
+					winner = 2;
+				}else{		
+					gameState=State.PLAY_START;
+				}
+				animTime=0;
+				if (ballPosX<0){ballPosX=0;}	// catch-alls for crash prevention
+				if (ballPosX>8){ballPosX=8;}
+				if (ballPosY<0){ballPosY=0;}
+				if (ballPosY>16){ballPosY=16;}
+			}
+
+			ballLastStep = animTime;
+		}
 	}
-}
 
 	
 	public void drawScreen() // draw the paddles and ball in the right place 
@@ -976,71 +992,5 @@ private void showWin()
 		display.setPixelRGB(8, 16, (R << 16) + (G << 8) + B);
 
 
-	}
-
-		private byte getUserInput()
-	{
-		byte userInput=0;
-		while (sock==null)
-		{
-			try
-			{
-				sock=servSock.accept();
-				sock.setSoTimeout(5);
-				in=sock.getInputStream();
-				System.out.println("Client connected");
-			}
-			catch (SocketTimeoutException e)
-			{
-				return -1;
-			}
-			catch (IOException e) 
-			{
-				e.printStackTrace();
-				sockCleanup();
-				return -1;
-			}
-		}
-		try
-		{
-			userInput=(byte)in.read();
-			if (userInput==-1)
-			{
-				sockCleanup();
-				System.out.println("Client disconnect");
-				return -1;
-			}
-			System.out.println("User input "+userInput);
-			return userInput;
-		}
-		catch (SocketTimeoutException e)
-		{
-			return 0;
-		}
-		catch (IOException e)
-		{
-			System.out.println("Client error");
-			e.printStackTrace();
-			sockCleanup();
-			return -1;
-		}
-	}
-	
-	private void sockCleanup()
-	{
-		try
-		{
-			sock.close();
-			in.close();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		finally
-		{
-			sock=null;
-			in=null;
-		}
 	}
 }
