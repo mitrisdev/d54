@@ -1,13 +1,20 @@
 package edu.mit.d54;
 
+import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
@@ -24,15 +31,56 @@ public class ArcadeControllerTestClient extends JPanel {
 	private InputStream in;
 	private OutputStream out;
 	
+	private Map<Character, Boolean> keyState;
+	private Map<Character, JButton> buttons;
+	
 	public ArcadeControllerTestClient(String host, int port)
 	{
 		this.host = host;
 		this.port = port;
+		
+		keyState = new HashMap<Character, Boolean>();
+		keyState.put('u', false);
+		keyState.put('d', false);
+		keyState.put('r', false);
+		keyState.put('l', false);
+		buttons = new HashMap<Character, JButton>();
+		buttons.put('u', new JButton("Up"));
+		buttons.put('d', new JButton("Down"));
+		buttons.put('r', new JButton("Left"));
+		buttons.put('l', new JButton("Right"));
+		for (final char key : buttons.keySet())
+		{
+			JButton button = buttons.get(key);
+			button.setFocusable(false);
+			button.addMouseListener(new MouseAdapter() {
+				
+				@Override
+				public void mouseReleased(MouseEvent arg0) {
+					release(key);
+				}
+				
+				@Override
+				public void mousePressed(MouseEvent arg0) {
+					press(key);
+				}
+			});
+		}
 	
 		setFocusable(true);
 		
 		setSize(200,200);
 		setPreferredSize(getSize());
+		setLayout(new GridLayout(3,3));
+		add(new JLabel(""));
+		add(buttons.get('u'));
+		add(new JLabel(""));
+		add(buttons.get('l'));
+		add(new JLabel(""));
+		add(buttons.get('r'));
+		add(new JLabel(""));
+		add(buttons.get('d'));
+		add(new JLabel(""));
 		
 		addKeyListener(new KeyListener() {
 			
@@ -51,16 +99,20 @@ public class ArcadeControllerTestClient extends JPanel {
 					switch (e.getKeyCode())
 					{
 					case KeyEvent.VK_UP:
-						out.write('u');
+					case KeyEvent.VK_W:
+						release('u');
 						break;
 					case KeyEvent.VK_DOWN:
-						out.write('d');
+					case KeyEvent.VK_S:
+						release('d');
 						break;
 					case KeyEvent.VK_LEFT:
-						out.write('l');
+					case KeyEvent.VK_A:
+						release('l');
 						break;
 					case KeyEvent.VK_RIGHT:
-						out.write('r');
+					case KeyEvent.VK_D:
+						release('r');
 						break;
 					}
 				}
@@ -72,34 +124,66 @@ public class ArcadeControllerTestClient extends JPanel {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				try
-				{
-					if (out == null)
-					{
-						openSocket();
-					}
 					switch (e.getKeyCode())
 					{
 					case KeyEvent.VK_UP:
-						out.write('U');
+					case KeyEvent.VK_W:
+						press('u');
 						break;
 					case KeyEvent.VK_DOWN:
-						out.write('D');
+					case KeyEvent.VK_S:
+						press('d');
 						break;
 					case KeyEvent.VK_LEFT:
-						out.write('L');
+					case KeyEvent.VK_A:
+						press('l');
 						break;
 					case KeyEvent.VK_RIGHT:
-						out.write('R');
+					case KeyEvent.VK_D:
+						press('r');
 						break;
 					}
-				}
-				catch (IOException e2)
-				{
-					closeSocket();
-				}
 			}
 		});
+	}
+	
+	private void press(char key)
+	{
+		keyState.put(key, true);
+		try
+		{
+			if (out == null)
+			{
+				openSocket();
+			}
+			out.write(Character.toUpperCase(key));
+		}
+		catch (IOException e)
+		{
+			closeSocket();
+		}
+		buttons.get(key).setSelected(true);
+	}
+	
+	private void release(char key)
+	{
+		if (keyState.get(key))
+		{
+			keyState.put(key, false);
+			try
+			{
+				if (out == null)
+				{
+					openSocket();
+				}
+				out.write(key);
+			}
+			catch (IOException e)
+			{
+				closeSocket();
+			}
+		}
+		buttons.get(key).setSelected(false);
 	}
 	
 	public ArcadeControllerTestClient()
