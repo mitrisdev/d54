@@ -50,7 +50,8 @@ public class ArcadeController implements Runnable {
 			byte b = getUserInput();
 			if (b > 0)
 			{
-				listener.arcadeButton(b);
+				if (listener != null)
+					listener.arcadeButton(b);
 			}
 		}
 	}

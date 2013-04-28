@@ -147,6 +147,11 @@ public class ArcadeControllerTestClient extends JPanel {
 		});
 	}
 	
+	public ArcadeControllerTestClient()
+	{
+		this("localhost",12345);
+	}
+
 	private void press(char key)
 	{
 		keyState.put(key, true);
@@ -184,11 +189,6 @@ public class ArcadeControllerTestClient extends JPanel {
 			}
 		}
 		buttons.get(key).setSelected(false);
-	}
-	
-	public ArcadeControllerTestClient()
-	{
-		this("localhost",12345);
 	}
 	
 	private void openSocket() throws IOException
