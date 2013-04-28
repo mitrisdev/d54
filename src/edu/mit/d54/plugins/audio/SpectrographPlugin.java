@@ -16,6 +16,7 @@ public class SpectrographPlugin extends DisplayPlugin {
 
 	public SpectrographPlugin(Display2D display, double framerate) {
 		super(display, framerate);
+		registerKnob("scrollDirection","0","Scroll down (0) or up (1)");
 		registerKnob("amplitudeMaxRatio","20","Ratio between the maximum amplitude and the minimum visible amplitude");
 		registerKnob("colorShiftRate","1","Color shift rate in pixels per frame");
 		registerKnob("colorPaletteWidth","20","Width of the color palette in pixels");
@@ -40,6 +41,7 @@ public class SpectrographPlugin extends DisplayPlugin {
 		audio.closeChannel();
 	}
 	
+	boolean scrollDirection;
 	double amplitudeMaxRatio;
 	double colorShiftRate;
 	double colorPaletteWidth;
@@ -78,7 +80,7 @@ public class SpectrographPlugin extends DisplayPlugin {
 			{
 				float lvl=(float)(Math.log10(amplitudeMaxRatio*levels[i][j]/audio.getFFTMaxValue())/Math.log10(amplitudeMaxRatio));
 				int x=i;
-				int y=h-j-1;
+				int y=scrollDirection ? j : (h-j-1);
 				getDisplay().setPixelRGB(x,y,getColor(x,y,lvl));
 			}
 		}
@@ -87,7 +89,9 @@ public class SpectrographPlugin extends DisplayPlugin {
 	@Override
 	protected void knobChanged(String knob, String value)
 	{
-		if (knob.equals("amplitudeMaxRatio"))
+		if (knob.equals("scrollDirection"))
+			scrollDirection = Integer.parseInt(value) == 1;
+		else if (knob.equals("amplitudeMaxRatio"))
 			amplitudeMaxRatio=Double.parseDouble(value);
 		else if (knob.equals("colorShiftRate"))
 			colorShiftRate=Double.parseDouble(value);
