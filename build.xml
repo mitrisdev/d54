@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <project name="D54" default="build.jar" basedir=".">
-
+	
     <target name="clean" depends="-load.properties">
         <delete dir="${build.dir}" quiet="true"/>
     </target>
@@ -11,6 +11,11 @@
 
     <target name="-init" depends="-load.properties">
         <mkdir dir="${build.dir}"/>
+    	<path id="lib">
+			<fileset dir="${lib.dir}">
+				<include name="*.jar"/>
+			</fileset>
+		</path>	
     </target>
 
     <target name="build.classes" depends="-init">
@@ -19,9 +24,11 @@
                destdir="${build.dir}/classes"
                includes="**/*.java"
                deprecation="off"
+	       includeantruntime="false"
                debug="on"
-target="1.5"
+	       target="1.5"
                source="1.5">
+        	<classpath refid="lib"/>
         </javac>
     </target>
 
@@ -30,9 +37,9 @@ target="1.5"
         <copy todir="${build.dir}/jar">
             <fileset dir="${build.dir}/classes" includes="**/*.class"/>
         </copy>
-		<copy todir="${build.dir}/jar/images">
-        	<fileset dir="images" includes="**/*.png"/>
-		</copy>
+	<copy todir="${build.dir}/jar/images">
+	    <fileset dir="images" includes="**/*.png **/*.ttf"/>
+	</copy>
         <jar destfile="${build.dir}/${jar.name}" basedir="${build.dir}/jar">
             <manifest>
                 <attribute name="Main-Class" value="edu.mit.d54.PluginRunner"/>
