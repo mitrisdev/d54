@@ -167,7 +167,7 @@ public class PongPlugin extends DisplayPlugin implements ArcadeListener {
 
 
 			break;
-			case GAME_END_2:  // win
+		case GAME_END_2:  // win
 			animTime+=timestep;
 
 			if (animTime < 5){
