@@ -38,7 +38,10 @@
             <fileset dir="${build.dir}/classes" includes="**/*.class"/>
         </copy>
 	<copy todir="${build.dir}/jar/images">
-	    <fileset dir="images" includes="**/*.png **/*.ttf"/>
+        <fileset dir="images" includes="**/*.png **/*.ttf **/*.gif"/>
+	</copy>
+	<copy todir="${build.dir}/jar/resources">
+        <fileset dir="resources" includes="**/*.txt"/>
 	</copy>
         <jar destfile="${build.dir}/${jar.name}" basedir="${build.dir}/jar">
             <manifest>
