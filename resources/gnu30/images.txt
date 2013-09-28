@@ -1,11 +1,2 @@
-GNU-Animation-1.gif
-GNU-text-sparkle.gif
-gavroche.gif
-gavroche.gif
-gavroche.gif
-gavroche.gif
-gavroche.gif
-gavroche.gif
-gavroche.gif
-GNU-text-sparkle.gif
-fish.gif
+gnu-white.gif
+30.gif
