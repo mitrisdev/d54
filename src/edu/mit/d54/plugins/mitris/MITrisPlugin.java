@@ -15,6 +15,7 @@ import edu.mit.d54.ArcadeController;
 import edu.mit.d54.ArcadeListener;
 import edu.mit.d54.Display2D;
 import edu.mit.d54.DisplayPlugin;
+import edu.mit.d54.TwitterClient;
 
 /**
  * This is a plugin implementing the MITris game.  User input is received over the TCP socket on port 12345.
@@ -78,6 +79,7 @@ public class MITrisPlugin extends DisplayPlugin implements ArcadeListener {
 		controller = ArcadeController.getInstance();
 
 		System.out.println("Game paused until client connect");
+		TwitterClient.tweet("Tetris is now being played on the MIT Green Building! #mittetris");
 		
 		gameState=State.IDLE;
 	}
@@ -170,6 +172,15 @@ public class MITrisPlugin extends DisplayPlugin implements ArcadeListener {
 				gameState=State.GAME_END_1;
 				gameOverBoard=mitrisGame.getDisplayBoard();
 				animTime=0;
+                String extra="";
+                if (gameOverBoard.getLevel()>=5)
+                        extra=" Great job!";
+                if (gameOverBoard.getLevel()>=8)
+                        extra=" Amazing!!";
+                TwitterClient.tweet(String.format("Someone just played Tetris on the MIT Green Building! "+
+                        	"They cleared %d lines and lasted %1.1f seconds!%s #mittetris",
+                        	gameOverBoard.getNumCleared(),mitrisGame.getTime(),extra));
+
 			}
 			break;
 		case GAME_END_1:
