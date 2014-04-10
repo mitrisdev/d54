@@ -1,10 +1,6 @@
 package edu.mit.d54.plugins.kx;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.util.LinkedList;
 import java.util.List;
 
