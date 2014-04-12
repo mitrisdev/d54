@@ -37,17 +37,18 @@
         <copy todir="${build.dir}/jar">
             <fileset dir="${build.dir}/classes" includes="**/*.class"/>
         </copy>
-	<copy todir="${build.dir}/jar/images">
-        <fileset dir="images" includes="**/*.png **/*.ttf **/*.gif"/>
-	</copy>
-	<copy todir="${build.dir}/jar/resources">
-        <fileset dir="resources" includes="**/*.txt"/>
-	</copy>
+		<copy todir="${build.dir}/jar/images">
+		    <fileset dir="images" includes="**/*.png **/*.gif"/>
+		</copy>
+		<copy todir="${build.dir}/jar/resources">
+		    <fileset dir="resources" includes="**/*.txt **/*.ttf"/>
+		</copy>
         <jar destfile="${build.dir}/${jar.name}" basedir="${build.dir}/jar">
             <manifest>
                 <attribute name="Main-Class" value="edu.mit.d54.PluginRunner"/>
             </manifest>
         </jar>
+    	<symlink link="${build.dir}/${product.name}.jar" resource="${jar.name}" overwrite="true"/>
     </target>
 
     <target name="build.dist.package" depends="build.jar">
@@ -58,10 +59,12 @@
             <fileset dir=".">
                 <include name="ant.properties"/>
                 <include name="build.xml"/>
-                <include name="doc/**/*"/>
                 <include name="lib/**/*.jar"/>
                 <include name="src/**/*.java"/>
-		<include name="images/**/*.png"/>
+				<include name="images/**/*.gif"/>
+				<include name="images/**/*.png"/>
+				<include name="resources/**/*.ttf"/>
+				<include name="resources/**/*.txt"/>
             </fileset>
         </copy>
         <zip destfile="${build.dir}/${dist.package.name}.zip"

@@ -30,11 +30,11 @@ Dependencies:
 
 To run the test plugin:
 
-	java -jar d54-0.1.0.jar edu.mit.d54.plugins.test.TestPlugin
+	java -jar d54.jar edu.mit.d54.plugins.test.TestPlugin
 
 To run the MITris plugin:
 
-	java -jar d54-0.1.0.jar edu.mit.d54.plugins.mitris.MITrisPlugin
+	java -jar d54.jar edu.mit.d54.plugins.mitris.MITrisPlugin
 
 The game opens up a socket on port 12345 to accept user commands.  The real controller would connect to this socket and send the button presses to the game as the characters `U`, `D`, `R`, and `L`.  This plugin certainly wasn't designed to take local input from the keyboard, but if you want to play locally, you can `telnet localhost 12345` in a separate terminal and type those letters.  You may have to hit `Return` to actually send the characters, depending on your `telnet` client.
 
@@ -60,7 +60,7 @@ In your `loop` method, you should call `getDisplay()` to grab a reference to the
 
 To run a custom plugin:
 
-	java -jar d54-0.1.0.jar -cp <your .class file directory> your.pkg.YourPlugin
+	java -jar d54.jar -cp <your .class file directory> your.pkg.YourPlugin
 
 ## Other hints ##
 
